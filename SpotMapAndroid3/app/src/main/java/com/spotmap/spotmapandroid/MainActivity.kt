@@ -17,8 +17,6 @@ class MainActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
 
-        val qqqssddd = 176787
-
         super.onCreate(savedInstanceState)
         setContent {
             MainApp()

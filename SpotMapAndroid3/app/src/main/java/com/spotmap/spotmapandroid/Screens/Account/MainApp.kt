@@ -1,4 +1,4 @@
-package com.spotmap.spotmapandroid.Screens
+package com.spotmap.spotmapandroid.Screens.Account
 
 import androidx.compose.runtime.Composable
 import androidx.navigation.compose.rememberNavController

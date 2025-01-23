@@ -1,10 +1,9 @@
-package com.spotmap.spotmapandroid.Screens
+package com.spotmap.spotmapandroid.Screens.Account
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.spotmap.spotmapandroid.R
 import com.spotmap.spotmapandroid.Services.UserHandler
 import kotlinx.coroutines.launch
 

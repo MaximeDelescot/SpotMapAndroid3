@@ -1,4 +1,4 @@
-package com.spotmap.spotmapandroid.Screens
+package com.spotmap.spotmapandroid.Screens.Account
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -25,9 +25,9 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.spotmap.spotmapandroid.Commons.BasicSpacer
 import com.spotmap.spotmapandroid.R
-import com.spotmap.spotmapandroid.Screens.Views.SignInView
-import com.spotmap.spotmapandroid.Screens.Views.SignUpView
-import com.spotmap.spotmapandroid.Screens.Views.goToAccountView
+import com.spotmap.spotmapandroid.Screens.Account.Views.SignInView
+import com.spotmap.spotmapandroid.Screens.Account.Views.SignUpView
+import com.spotmap.spotmapandroid.Screens.Account.Views.goToAccountView
 
 @Composable
 fun AccountScreen(navController: NavController,
@@ -120,7 +120,7 @@ fun AccountMiddleView(displayedView: AccountScreenViewModel.DisplayedView,
             AccountScreenViewModel.DisplayedView.SIGNIN ->
                 SignInView(
                     forgotPasswordButtonTapped = {},
-                    tryToSignIn = {email, password ->
+                    tryToSignIn = { email, password ->
                         tryToSignIn(email, password)
                     })
             else -> {}

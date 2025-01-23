@@ -1,4 +1,4 @@
-package com.spotmap.spotmapandroid.Screens.Views
+package com.spotmap.spotmapandroid.Screens.Account.Views
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column

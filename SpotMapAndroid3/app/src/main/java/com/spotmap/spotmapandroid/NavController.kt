@@ -8,7 +8,7 @@ import androidx.compose.ui.Modifier
 
 @Composable
 fun MainApp() {
-//    val test = "sdqdqsd"
+    val test = "sdqddqsdqsdqsqsd"
 //    val navController = rememberNavController()
 //    val apiService = APIService()
 //    val userHandler = UserHandler(apiService)
