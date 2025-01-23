@@ -17,7 +17,7 @@ class MainActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
 
-        val qqsdqsd = 1
+        val qqqsqsdqsddd = 17
 
         super.onCreate(savedInstanceState)
         setContent {
