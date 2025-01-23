@@ -56,10 +56,12 @@ dependencies {
     androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
+    implementation(libs.androidx.appcompat)
 
     implementation(libs.play.services.maps)
 
     implementation(libs.firebase.auth)
     implementation(libs.firebase.firestore)
-
+    implementation(libs.firebase.storage)
+    implementation(platform(libs.firebase.bom))
 }
