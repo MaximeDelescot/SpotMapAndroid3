@@ -59,4 +59,6 @@ dependencies {
 
     implementation(libs.play.services.maps)
 
+    implementation(libs.firebase.auth)
+
 }
