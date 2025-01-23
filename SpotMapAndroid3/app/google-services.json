@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "452114124874",
+    "firebase_url": "https://spotmapapi-default-rtdb.firebaseio.com",
+    "project_id": "spotmapapi",
+    "storage_bucket": "spotmapapi.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:452114124874:android:6bd2949f8313a1ef9b56b3",
+        "android_client_info": {
+          "package_name": "com.spotmap.spotmapandroid"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCGPX9qU6Y4QPQx9XkZ9R-kDXUDRd0GVwk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

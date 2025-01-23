@@ -22,12 +22,16 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.spotmap.spotmapandroid.R
+import androidx.compose.foundation.layout.Box
+
 
 @Composable
-fun CustomTextField(placeholder: String,
-                    textState: MutableState<String> = remember { mutableStateOf("") },
-                    onTextDidChange: () -> Unit, isPassword: Boolean = false) {
-
+fun CustomTextField(
+    placeholder: String,
+    textState: MutableState<String> = remember { mutableStateOf("") },
+    onTextDidChange: () -> Unit,
+    isPassword: Boolean = false
+) {
     val modifier = Modifier.fillMaxWidth().height(40.dp).padding(0.dp, 0.dp)
         .background(color = colorResource(id = R.color.BackgroundColor), shape = RoundedCornerShape(8.dp))
 
@@ -35,33 +39,30 @@ fun CustomTextField(placeholder: String,
     val placeholderColor = colorResource(id = R.color.LightDarker2Color)
     val textSize = 15
 
-    var text = remember { mutableStateOf("") }
+    Box(modifier = modifier, contentAlignment = Alignment.CenterStart) {
 
-    Box(modifier = modifier,
-        contentAlignment = Alignment.CenterStart
-    ) {
-
+        // Show placeholder text if textState is empty
         if (textState.value.isEmpty()) {
-            Text(modifier= Modifier.padding(start = 16.dp),
+            Text(
+                modifier = Modifier.padding(start = 16.dp),
                 text = placeholder,
-                style = TextStyle(fontSize = textSize.sp, color = placeholderColor))
+                style = TextStyle(fontSize = textSize.sp, color = placeholderColor)
+            )
         }
 
-        BasicTextField(modifier = Modifier.padding(start = 16.dp),
+        // BasicTextField for text input
+        BasicTextField(
+            modifier = Modifier.padding(start = 16.dp),
             value = textState.value,
-            textStyle = TextStyle.Default.copy(fontSize = textSize.sp, color = textColor ),
+            textStyle = TextStyle.Default.copy(fontSize = textSize.sp, color = textColor),
             cursorBrush = SolidColor(textColor),
-            visualTransformation = if (isPassword==true) { PasswordVisualTransformation() } else { VisualTransformation.None},
+            visualTransformation = if (isPassword) PasswordVisualTransformation() else VisualTransformation.None,
             onValueChange = { newText ->
                 textState.value = newText
-                onTextDidChange()
-            })
+                onTextDidChange() // Notify parent composable about text change
+            }
+        )
     }
-}
-
-@Composable
-fun Box(modifier: Modifier, contentAlignment: Alignment, content: @Composable () -> Unit) {
-    TODO("Not yet implemented")
 }
 
 @Preview(showBackground = false)
