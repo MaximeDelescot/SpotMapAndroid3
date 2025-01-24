@@ -44,6 +44,7 @@ fun CheckboxWithTitle(title:String, isChecked: MutableState<Boolean>) {
         )
     }
 }
+
 @Preview(showBackground = false)
 @Composable
 fun PreviewCheckBox() {

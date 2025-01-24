@@ -29,6 +29,7 @@ import com.spotmap.spotmapandroid.Commons.BasicSpacer
 import com.spotmap.spotmapandroid.Commons.CheckboxWithTitle
 import com.spotmap.spotmapandroid.Commons.CustomTextField
 import com.spotmap.spotmapandroid.Commons.GeneralButton
+import com.spotmap.spotmapandroid.Commons.LargeCustomTextField
 import com.spotmap.spotmapandroid.Commons.SegmentedButton
 import com.spotmap.spotmapandroid.R
 
@@ -56,14 +57,12 @@ fun AddGeneralInformationView(modifier: Modifier) {
     BasicSpacer()
     CustomTextField(placeholder = "Name", onTextDidChange = {})
     BasicSpacer()
-    CustomTextField(placeholder = "Description", onTextDidChange = {})
+    LargeCustomTextField(placeholder = "Description", onTextDidChange = {})
     BasicSpacer()
     SegmentedButton(modifier = modifier.fillMaxWidth(), itemsTitles = listOf("STREET", "PARK"))
     BasicSpacer()
     CheckboxWithTitle(title = "Need to pay access", isChecked = isPayableSelected)
-    BasicSpacer()
     CheckboxWithTitle(title = "Is D.I.Y", isChecked = isDIYSelected)
-    BasicSpacer()
     CheckboxWithTitle(title = "Has access to water", isChecked = isWaterSelected)
     BasicSpacer()
     GeneralButton("Next", onClick = {})
