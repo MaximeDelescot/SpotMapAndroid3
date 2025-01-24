@@ -55,15 +55,3 @@ fun AddImagesView(modifier: Modifier = Modifier,
     CustomPageIndicator(currentIndex = remember { mutableStateOf(currentIndex) },
         indexCount = numberOfPage)
 }
-
-
-@Preview(showBackground = true)
-@Composable
-fun PreviewAddSpotImageView() {
-
-    AddImageItem(Modifier)
-
-//    AddImagesView(
-//        currentIndex = 1,
-//        numberOfPage = 3)
-}

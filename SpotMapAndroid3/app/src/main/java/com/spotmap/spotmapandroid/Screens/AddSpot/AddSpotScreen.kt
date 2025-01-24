@@ -25,12 +25,14 @@ import com.spotmap.spotmapandroid.Screens.AddSpot.Views.AddGeneralInformationVie
 import com.spotmap.spotmapandroid.Screens.AddSpot.Views.AddImagesView
 import com.spotmap.spotmapandroid.Screens.AddSpot.Views.AddLocationView
 import com.spotmap.spotmapandroid.Services.APIService
+import com.spotmap.spotmapandroid.Services.StorageService
 import com.spotmap.spotmapandroid.Services.UserHandler
 import kotlinx.coroutines.launch
 
 
 @Composable
-fun AddSpotScreen(modifier: Modifier = Modifier, viewModel: AddSpotScreenViewModel) {
+fun AddSpotScreen(modifier: Modifier = Modifier,
+                  viewModel: AddSpotScreenViewModel) {
 
     val numberOfPages = 3
     val currentPage = remember { mutableStateOf(0) }
@@ -51,7 +53,7 @@ fun AddSpotScreen(modifier: Modifier = Modifier, viewModel: AddSpotScreenViewMod
 
     fun goToPrevious() {
         coroutineScope.launch {
-            if (currentPage.value > 0) { // Assurez-vous de ne pas descendre en dessous de 0
+            if (currentPage.value > 0) {
                 currentPage.value = currentPage.value - 1
                 pagerState.animateScrollToPage(currentPage.value)
             }
@@ -107,8 +109,7 @@ fun AddSpotScreen(modifier: Modifier = Modifier, viewModel: AddSpotScreenViewMod
                             currentIndex = 2,
                             numberOfPage = numberOfPages,
                             previousButtonTapped = { goToPrevious() },
-                            creationButtonTapped = { createSpot() }
-                        )
+                            creationButtonTapped = { createSpot() })
                     }
                 }
             }
@@ -119,12 +120,3 @@ fun AddSpotScreen(modifier: Modifier = Modifier, viewModel: AddSpotScreenViewMod
 }
 
 
-@Preview(showBackground = false)
-@Composable
-fun previewSpotScren() {
-
-    val apiService = APIService()
-    val userHandler = UserHandler(apiService)
-
-    AddSpotScreen(modifier = Modifier, viewModel = AddSpotScreenViewModel(userHandler, apiService))
-}
