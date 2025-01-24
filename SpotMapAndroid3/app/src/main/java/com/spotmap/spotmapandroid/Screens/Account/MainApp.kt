@@ -10,6 +10,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.spotmap.spotmapandroid.BottomBar
 import com.spotmap.spotmapandroid.Screens.AddSpot.AddSpotScreen
+import com.spotmap.spotmapandroid.Screens.AddSpot.AddSpotScreenViewModel
 import com.spotmap.spotmapandroid.Screens.Map.MapScreen
 import com.spotmap.spotmapandroid.Screens.Social.SocialScreen
 import com.spotmap.spotmapandroid.Screens.SpotDetails.SpotDetailsScreen
@@ -19,12 +20,12 @@ import com.spotmap.spotmapandroid.Services.UserHandler
 
 @Composable
 fun MainApp() {
-    val test = "sdqdqshqshdqsdjjqsd"
     val navController = rememberNavController()
     val apiService = APIService()
     val userHandler = UserHandler(apiService)
 
     val accountViewModel = AccountScreenViewModel(userHandler)
+    val addSpotScreenViewModel = AddSpotScreenViewModel(userHandler, apiService)
 
     Scaffold(
         bottomBar = { BottomBar(navController = navController) }
@@ -41,7 +42,7 @@ fun MainApp() {
                 SocialScreen()
             }
             composable("addSpot") {
-                AddSpotScreen()
+                AddSpotScreen(viewModel = addSpotScreenViewModel)
             }
             composable("account") {
                 AccountScreen(

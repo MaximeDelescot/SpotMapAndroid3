@@ -1,4 +1,4 @@
-package com.spotmap.spotmapandroid.Screens.AddSpot
+package com.spotmap.spotmapandroid.Screens.AddSpot.Views
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
@@ -22,7 +22,7 @@ fun AddImagesView(modifier: Modifier,
     BasicSpacer()
     CustomTextField(placeholder = "Name", onTextDidChange = {})
     BasicSpacer()
-    GeneralButton("CREATE SPOT", onClick = {})
+    GeneralButton("CREATE SPOT", onClick = { creationButtonTapped()})
     BasicSpacer()
     GeneralButton("Previous", onClick = { previousButtonTapped() }, style = GeneralButtonStyle.SECONDARY)
     BasicSpacer()

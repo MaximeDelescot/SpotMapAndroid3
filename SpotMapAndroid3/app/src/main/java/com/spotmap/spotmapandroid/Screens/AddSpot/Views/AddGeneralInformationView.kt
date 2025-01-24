@@ -1,7 +1,5 @@
-package com.spotmap.spotmapandroid.Screens.AddSpot
+package com.spotmap.spotmapandroid.Screens.AddSpot.Views
 
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
@@ -19,6 +17,8 @@ import com.spotmap.spotmapandroid.Commons.TitleText
 
 @Composable
 fun AddGeneralInformationView(modifier: Modifier,
+                              nameText: MutableState<String>,
+                              descriptionText: MutableState<String>,
                               currentIndex: Int,
                               numberOfPage: Int,
                               nextButtonTapped: ()->Unit) {
@@ -27,20 +27,41 @@ fun AddGeneralInformationView(modifier: Modifier,
     var isDIYSelected = remember { mutableStateOf(false) }
     var isWaterSelected = remember { mutableStateOf(false) }
 
+
+    var buttonIsEnable = if(nameText.value.isEmpty()) { false } else { true }
+
     TitleText("Add general informations (1/3)")
     BasicSpacer()
-    CustomTextField(placeholder = "Name", onTextDidChange = {})
+    CustomTextField(
+        placeholder = "Name",
+        onTextDidChange = {},
+        textState = nameText)
     BasicSpacer()
-    LargeCustomTextField(placeholder = "Description", onTextDidChange = {})
+    LargeCustomTextField(
+        placeholder = "Description",
+        onTextDidChange = {},
+        textState = descriptionText)
     BasicSpacer()
-    SegmentedButton(modifier = modifier.fillMaxWidth(), itemsTitles = listOf("STREET", "PARK"))
+    SegmentedButton(
+        modifier = modifier.fillMaxWidth(),
+        itemsTitles = listOf("STREET", "PARK"))
     BasicSpacer()
-    CheckboxWithTitle(title = "Need to pay access", isChecked = isPayableSelected)
-    CheckboxWithTitle(title = "Is D.I.Y", isChecked = isDIYSelected)
-    CheckboxWithTitle(title = "Has access to water", isChecked = isWaterSelected)
+    CheckboxWithTitle(
+        title = "Need to pay access",
+        isChecked = isPayableSelected)
+    CheckboxWithTitle(
+        title = "Is D.I.Y",
+        isChecked = isDIYSelected)
+    CheckboxWithTitle(
+        title = "Has access to water",
+        isChecked = isWaterSelected)
     BasicSpacer()
-    GeneralButton("Next", onClick = { nextButtonTapped() })
+    GeneralButton(
+        "Next",
+        onClick = { nextButtonTapped() },
+        isEnable = buttonIsEnable)
     BasicSpacer()
-    CustomPageIndicator(currentIndex = remember { mutableStateOf(currentIndex) },
+    CustomPageIndicator(
+        currentIndex = remember { mutableStateOf(currentIndex) },
         indexCount = numberOfPage)
 }

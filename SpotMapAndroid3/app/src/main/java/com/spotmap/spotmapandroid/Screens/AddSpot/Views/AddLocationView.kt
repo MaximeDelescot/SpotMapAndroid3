@@ -1,4 +1,4 @@
-package com.spotmap.spotmapandroid.Screens.AddSpot
+package com.spotmap.spotmapandroid.Screens.AddSpot.Views
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
