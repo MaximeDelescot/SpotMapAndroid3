@@ -6,18 +6,29 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material3.Button
+import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.spotmap.spotmapandroid.R
 import kotlin.collections.plus
@@ -33,10 +44,25 @@ class ImageSelectorItem(
 @Composable
 fun ImagesSelectorView() {
 
+    val maxNbOfItems = 4
+
+
     val items: MutableState<List<ImageSelectorItem>> = remember {
         mutableStateOf(listOf(ImageSelectorItem(
             type = ImageSelectorItemType.PLUS,
             id = 0)))
+    }
+
+    fun addNewItem() {
+        if (items.value.size < maxNbOfItems) {
+            items.value = listOf(ImageSelectorItem(type = ImageSelectorItemType.IMAGE, id = items.value.size)) + items.value
+        } else {
+            items.value = (listOf(ImageSelectorItem(type = ImageSelectorItemType.IMAGE, id = items.value.size)) + items.value).filter { item -> item.type == ImageSelectorItemType.IMAGE }
+        }
+    }
+
+    fun removeItem(index: Int) {
+
     }
 
     LazyVerticalGrid(
@@ -51,16 +77,10 @@ fun ImagesSelectorView() {
             .aspectRatio(1f)
 
         items(items.value.size) { index ->
-
             when(items.value[index].type) {
-                ImageSelectorItemType.PLUS ->
-                    AddImageItem(modifier, onClick = {
-                        items.value = listOf(ImageSelectorItem(type = ImageSelectorItemType.IMAGE, id = items.value.size)) + items.value
-                    })
-                ImageSelectorItemType.IMAGE ->
-                    ImageItem(modifier)
+                ImageSelectorItemType.PLUS -> AddImageItem(modifier, onClick = { addNewItem() })
+                ImageSelectorItemType.IMAGE -> ImageItem(modifier, closeButtonTapped =  { removeItem(index) })
             }
-
         }
     }
 }
@@ -80,12 +100,41 @@ fun AddImageItem(modifier: Modifier, onClick: () -> Unit = {}) {
 }
 
 @Composable
-fun ImageItem(modifier: Modifier) {
-    Box(modifier = modifier.background(color = colorResource(id=R.color.BackgroundColor))) {
+fun ImageItem(modifier: Modifier = Modifier, closeButtonTapped: ()->Unit = {} ) {
+    Box(modifier = modifier.background(color = colorResource(id = R.color.BackgroundColor))) {
         Image(
             modifier = Modifier.fillMaxWidth().aspectRatio(1f),
             painter = painterResource(id = R.drawable.ic_earth),
             contentDescription = "logo app",
             colorFilter = ColorFilter.tint(colorResource(id = R.color.LightColor)))
+
+        CancelButton(
+            modifier = Modifier.align(Alignment.TopEnd),
+            onButtonTapped = closeButtonTapped)
     }
+}
+
+@Composable
+fun CancelButton(modifier: Modifier = Modifier, onButtonTapped: ()->Unit ) {
+    Box(modifier = modifier) {
+        TextButton(
+            modifier = Modifier.padding(0.dp),
+            onClick = onButtonTapped
+        ) {
+            Image(
+                modifier = Modifier.size(30.dp).background(color = Color.Black, shape = CircleShape),
+                painter = painterResource(id = R.drawable.ic_close),
+                contentDescription = "remove image",
+                colorFilter = ColorFilter.tint(colorResource(id = R.color.PrimaryColor))
+            )
+        }
+    }
+}
+
+
+
+@Preview(showBackground = false)
+@Composable
+fun PreviewImageItem() {
+    ImageItem()
 }
