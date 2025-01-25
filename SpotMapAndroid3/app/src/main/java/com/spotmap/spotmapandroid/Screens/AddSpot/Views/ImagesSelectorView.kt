@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.grid.GridCells
@@ -129,31 +130,43 @@ fun AddImageItem(modifier: Modifier, imagesSelected: MutableState<List<Uri?>?>) 
 }
 
 @Composable
-fun ImageItem(modifier: Modifier = Modifier, uri: Uri? = null, closeButtonTapped: ()->Unit = {} ) {
+fun ImageItem(
+    modifier: Modifier = Modifier,
+    uri: Uri? = null,
+    closeButtonTapped: () -> Unit = {}
+) {
     Box(modifier = modifier.background(color = colorResource(id = R.color.BackgroundColor))) {
 
         AsyncImage(
             model = uri.toString(),
             contentDescription = "",
-            modifier = Modifier.fillMaxWidth().aspectRatio(1f),
+            modifier = Modifier
+                .fillMaxWidth()
+                .aspectRatio(1f),
             contentScale = ContentScale.Crop,
         )
 
         CancelButton(
-            modifier = Modifier.align(Alignment.TopEnd),
-            onButtonTapped = closeButtonTapped)
+            modifier = Modifier
+                .align(Alignment.TopEnd)
+                .offset(x = 12.dp, y = (-8).dp),
+            onButtonTapped = closeButtonTapped
+        )
     }
 }
 
+
 @Composable
-fun CancelButton(modifier: Modifier = Modifier, onButtonTapped: ()->Unit ) {
+fun CancelButton(modifier: Modifier = Modifier, onButtonTapped: () -> Unit) {
     Box(modifier = modifier) {
         TextButton(
-            modifier = Modifier.padding(0.dp),
+            modifier = Modifier.padding(0.dp), // Supprime tout padding autour du bouton
             onClick = onButtonTapped
         ) {
             Image(
-                modifier = Modifier.size(30.dp).background(color = Color.Black, shape = CircleShape),
+                modifier = Modifier
+                    .size(30.dp)
+                    .background(color = Color.Black, shape = CircleShape),
                 painter = painterResource(id = R.drawable.ic_close),
                 contentDescription = "remove image",
                 colorFilter = ColorFilter.tint(colorResource(id = R.color.PrimaryColor))
@@ -161,6 +174,7 @@ fun CancelButton(modifier: Modifier = Modifier, onButtonTapped: ()->Unit ) {
         }
     }
 }
+
 
 @Preview(showBackground = false)
 @Composable
