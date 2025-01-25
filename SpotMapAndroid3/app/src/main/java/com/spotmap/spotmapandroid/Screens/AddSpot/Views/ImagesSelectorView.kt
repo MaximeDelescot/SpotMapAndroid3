@@ -21,7 +21,11 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -48,23 +52,34 @@ class ImageSelectorItem(
 
 @Composable
 fun ImagesSelectorView() {
-    // État pour les images sélectionnées
-    val imagesSelected = remember { mutableStateOf<List<Uri?>?>(null) }
+    val numberMaxOfItem = 4
+    val newImageSelected = remember { mutableStateOf<List<Uri?>?>(null) }
+    val imageSelected = remember { mutableStateListOf<Uri>() }
 
-
-    // Fonction pour générer les éléments de la grille
-    fun getItems(): List<ImageSelectorItem> {
-        val items = mutableListOf<ImageSelectorItem>()
-        imagesSelected.value?.forEachIndexed { index, _ ->
-            items.add(ImageSelectorItem(type = ImageSelectorItemType.IMAGE, id = index - 1))
+    LaunchedEffect(newImageSelected.value) {
+        newImageSelected.value?.filterNotNull()?.forEach { uri ->
+            if (!imageSelected.contains(uri) && imageSelected.size < numberMaxOfItem) {
+                imageSelected.add(uri)
+            }
         }
-        val size = imagesSelected.value?.size
-        val plusIndex = if (size != null) size else 0
-        items.add(ImageSelectorItem(type = ImageSelectorItemType.PLUS, id = plusIndex))
-        return items
     }
 
-    val items = remember(imagesSelected.value) { getItems() }
+    val imagesSelected by remember(imageSelected) {
+        derivedStateOf { imageSelected.take(numberMaxOfItem) }
+    }
+
+    val items by remember(imagesSelected) {
+        derivedStateOf {
+            val itemList = mutableListOf<ImageSelectorItem>()
+            imagesSelected.forEachIndexed { index, _ ->
+                itemList.add(ImageSelectorItem(type = ImageSelectorItemType.IMAGE, id = index))
+            }
+            if (imagesSelected.size < numberMaxOfItem) {
+                itemList.add(ImageSelectorItem(type = ImageSelectorItemType.PLUS, id = imagesSelected.size))
+            }
+            itemList
+        }
+    }
 
     LazyVerticalGrid(
         columns = GridCells.Fixed(3),
@@ -79,15 +94,21 @@ fun ImagesSelectorView() {
 
         items(items.size) { index ->
             when (items[index].type) {
-                ImageSelectorItemType.PLUS -> AddImageItem(modifier, imagesSelected)
-                ImageSelectorItemType.IMAGE ->
-                     ImageItem(modifier,
-                         uri= ((imagesSelected.value ?: emptyList()) + null)[index],
-                         closeButtonTapped = {})
+                ImageSelectorItemType.PLUS -> AddImageItem(modifier, newImageSelected)
+                ImageSelectorItemType.IMAGE -> ImageItem(
+                    modifier,
+                    uri = imagesSelected[index],
+                    closeButtonTapped = {
+                        imageSelected.remove(imagesSelected[index]) // Remove the image when close is tapped
+                    }
+                )
             }
         }
     }
 }
+
+
+
 
 @Composable
 fun AddImageItem(modifier: Modifier, imagesSelected: MutableState<List<Uri?>?>) {
