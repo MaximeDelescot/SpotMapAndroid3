@@ -34,44 +34,49 @@ class AddSpotScreenViewModel (val userHandler: UserHandler,
 
     init {
         userHandler.userDidUpdate.observeForever(Observer {
-            if(_viewToDisplay.value != AddSpotScreenViewType.LOADING) {
+            if (_viewToDisplay.value != AddSpotScreenViewType.LOADING) {
                 _viewToDisplay.value = getViewToDisplay()
             }
         })
     }
 
     private fun getViewToDisplay(): AddSpotScreenViewType {
-        if(userHandler.getUser() == null) {
+        if (userHandler.getUser() == null) {
             return AddSpotScreenViewType.NOTLOGGED
         } else {
             return AddSpotScreenViewType.ADDFORM
         }
     }
 
-    fun createSpot(name: String,
-                   description: String,
-                   type: SpotType,
-                   selectedImage: List<ImageView>) {
-
-        _viewToDisplay.value = AddSpotScreenViewType.LOADING
+    fun createSpot(
+        name: String,
+        description: String,
+        type: SpotType,
+        selectedImage: List<ImageView>
+    ) {
 
         viewModelScope.launch {
-            try {
-                val fakeLati = Random.nextDouble(48.80, 48.90)
-                val fakeLong = Random.nextDouble(2.26, 2.40)
 
-                val creator = userHandler.getUserLight()
-                if (creator != null) {
+            _viewToDisplay.value = AddSpotScreenViewType.LOADING
+            val fakeLati = Random.nextDouble(48.80, 48.90)
+            val fakeLong = Random.nextDouble(2.26, 2.40)
 
-                    val newSpot = Spot(
-                        name = name,
-                        creator = creator,
-                        description = description,
-                        spotEnum = type,
-                        coordinate = Coordinate(fakeLati, fakeLong),
-                        imageUrls = listOf())
+            val creator = userHandler.getUserLight()
+            if (creator != null) {
+
+                val newSpot = Spot(
+                    name = name,
+                    creator = creator,
+                    description = description,
+                    spotEnum = type,
+                    coordinate = Coordinate(fakeLati, fakeLong),
+                    imageUrls = listOf()
+                )
+
+                try {
 
                     val urls: MutableList<String> = mutableListOf()
+
                     coroutineScope {
                         val deferredResults = selectedImage.map { image ->
                             async {
@@ -79,68 +84,20 @@ class AddSpotScreenViewModel (val userHandler: UserHandler,
                                 downloadUrl
                             }
                         }
-                        urls.addAll(deferredResults.awaitAll())
+                        urls.addAll(deferredResults.awaitAll().filterNotNull())
                     }
 
                     newSpot.imageUrls = urls
+
                     apiService.addSpot(newSpot)
                     _viewToDisplay.value = AddSpotScreenViewType.SUCCED
-                } else {
-                    throw Throwable(message = "Failed to create spot: user is null")
+
+                } catch (e: Exception) {
+                    Log.d("TEST ERROR", "$e")
+                    storageService.deleteSpotFolder(newSpot)
+                    _viewToDisplay.value = AddSpotScreenViewType.FAILED
                 }
-            } catch (e: Exception) {
-                _viewToDisplay.value = AddSpotScreenViewType.FAILED
             }
         }
     }
-
-//    fun createSpot(name: String, description: String, type: SpotType, selectedImages: List<ImageView>) {
-//        _viewToDisplay.value = AddSpotScreenViewType.LOADING
-//
-//        val fakeLati = Random.nextDouble(48.80, 48.90)
-//        val fakeLong = Random.nextDouble(2.26, 2.40)
-//
-//        viewModelScope.launch {
-//            try {
-//                val creator = userHandler.getUserLight()
-//
-//                if (creator != null) {
-//                    val newSpot = Spot(
-//                        name = name,
-//                        creator = creator,
-//                        description = description,
-//                        spotEnum = type,
-//                        coordinate = Coordinate(fakeLati, fakeLong),
-//                        imageUrls = listOf() // Initially empty list
-//                    )
-//
-//                    val deferredUploads = selectedImages.map { image ->
-//                        async  {
-//                            storageService.save(image, newSpot, object : StorageService.UploadCallback {
-//                                override fun onSuccess(downloadUrl: String) {
-//                                    return downloadUrl
-//                                }
-//                                override fun onFailure() {
-//                                    throw Throwable(message = "Creation spot failed: Images upload failed")
-//                                }
-//                            })
-//                        }
-//                    }
-//
-//                    val imageUrls: MutableList<String> = mutableListOf()
-//                    for (image in selectedImages) {
-//
-//                    }
-//
-//
-//                } else {
-//                    throw Throwable(message = "Creation spot failed: user is null")
-//                }
-//            } catch (e: Exception) {
-//                launch(Dispatchers.Main) {
-//                    _viewToDisplay.value = AddSpotScreenViewType.FAILED
-//                }
-//            }
-//        }
-//    }
 }

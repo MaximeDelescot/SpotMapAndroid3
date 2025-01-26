@@ -71,7 +71,6 @@ fun AddSpotScreen(modifier: Modifier = Modifier,
     }
 
     fun createSpot() {
-
         val selectedImages = imageSelected.map { uri ->
             val imageView = ImageView(context)
             imageView.setImageURI(uri)

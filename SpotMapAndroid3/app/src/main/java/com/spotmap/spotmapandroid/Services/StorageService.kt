@@ -7,6 +7,7 @@ import android.widget.ImageView
 import com.google.firebase.Firebase
 import com.google.firebase.storage.storage
 import com.spotmap.spotmapandroid.Class.Spot
+import kotlinx.coroutines.tasks.await
 import java.io.ByteArrayOutputStream
 import java.util.UUID
 import kotlin.coroutines.resume
@@ -24,6 +25,7 @@ class StorageService() {
 
     suspend fun save(imageView: ImageView, spot: Spot): String {
         return suspendCoroutine { continuation ->
+
             val storageRef = storage.reference
             val id = UUID.randomUUID().toString()
             val spaceRef = storageRef.child("Spots/${spot.id}/$id.jpg")
@@ -39,10 +41,29 @@ class StorageService() {
                 continuation.resumeWithException(Throwable("Failed to upload image"))
             }.addOnSuccessListener { taskSnapshot ->
                 taskSnapshot.storage.downloadUrl.addOnSuccessListener { uri ->
-                    continuation.resume(uri.toString()) // Success result
+                    continuation.resume(uri.toString())
                 }
             }
         }
     }
 
+    suspend fun deleteSpotFolder(spot: Spot) {
+
+        val storageRef = storage.reference
+        val spaceRef = storageRef.child("Spots/${spot.id}")
+
+        try {
+            val result = spaceRef.listAll().await()
+
+            for (item in result.items) {
+                try {
+                    item.delete().await()
+                } catch (e: Exception) {
+                    throw e
+                }
+            }
+        } catch (e: Exception) {
+            throw e
+        }
+    }
 }
