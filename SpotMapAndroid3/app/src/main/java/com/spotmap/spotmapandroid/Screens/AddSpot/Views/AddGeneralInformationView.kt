@@ -21,6 +21,8 @@ fun AddGeneralInformationView(modifier: Modifier,
                               descriptionText: MutableState<String>,
                               currentIndex: Int,
                               numberOfPage: Int,
+                              typeItems: List<String>,
+                              typeIndex: MutableState<Int>,
                               nextButtonTapped: ()->Unit) {
 
     var isPayableSelected = remember { mutableStateOf(false) }
@@ -43,8 +45,9 @@ fun AddGeneralInformationView(modifier: Modifier,
         textState = descriptionText)
     BasicSpacer()
     SegmentedButton(
+        indexSelected = typeIndex,
         modifier = modifier.fillMaxWidth(),
-        itemsTitles = listOf("STREET", "PARK"))
+        itemsTitles = typeItems)
     BasicSpacer()
     CheckboxWithTitle(
         title = "Need to pay access",

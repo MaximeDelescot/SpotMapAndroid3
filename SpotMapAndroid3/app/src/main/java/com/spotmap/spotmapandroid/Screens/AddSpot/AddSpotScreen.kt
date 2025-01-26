@@ -51,6 +51,8 @@ fun AddSpotScreen(modifier: Modifier = Modifier,
     var nameText = remember { mutableStateOf("") }
     var descriptionText = remember { mutableStateOf("") }
     val imageSelected = remember { mutableStateListOf<Uri>() }
+    val typeIndex = remember { mutableStateOf(0) }
+    val typeItems = listOf<SpotType>(SpotType.Street, SpotType.Park)
 
     fun goToNext() {
         coroutineScope.launch {
@@ -80,7 +82,7 @@ fun AddSpotScreen(modifier: Modifier = Modifier,
         viewModel.createSpot(
             name = nameText.value,
             description= descriptionText.value,
-            type = SpotType.Street,
+            type = typeItems[typeIndex.value],
             selectedImage = selectedImages)
     }
 
@@ -133,6 +135,8 @@ fun AddSpotScreen(modifier: Modifier = Modifier,
                                     descriptionText = descriptionText,
                                     currentIndex = 0,
                                     numberOfPage = numberOfPages,
+                                    typeIndex = typeIndex,
+                                    typeItems = typeItems.map{ it.name },
                                     nextButtonTapped = { goToNext() }
                                 )
                                 1 -> AddLocationView(
