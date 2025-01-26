@@ -45,7 +45,9 @@ fun MainApp() {
                 SocialScreen()
             }
             composable("addSpot") {
-                AddSpotScreen(viewModel = addSpotViewModel)
+                AddSpotScreen(
+                    navController= navController,
+                    viewModel = addSpotViewModel)
             }
             composable("account") {
                 AccountScreen(

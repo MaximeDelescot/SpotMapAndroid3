@@ -34,9 +34,11 @@ import com.spotmap.spotmapandroid.Screens.AddSpot.Views.AddLocationView
 import com.spotmap.spotmapandroid.Screens.AddSpot.Views.NoLoggedView
 import kotlinx.coroutines.launch
 import androidx.compose.ui.platform.LocalContext
+import androidx.navigation.NavController
 
 @Composable
-fun AddSpotScreen(modifier: Modifier = Modifier,
+fun AddSpotScreen(navController: NavController,
+                  modifier: Modifier = Modifier,
                   viewModel: AddSpotScreenViewModel) {
 
     val context = LocalContext.current
@@ -93,7 +95,7 @@ fun AddSpotScreen(modifier: Modifier = Modifier,
         when (displayedView.value) {
 
             AddSpotScreenViewModel.AddSpotScreenViewType.SUCCED -> {
-                Text("SUCCED")
+                navController.navigate("spotDetails")
             }
             AddSpotScreenViewModel.AddSpotScreenViewType.NOTLOGGED -> {
                 NoLoggedView()
