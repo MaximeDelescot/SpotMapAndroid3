@@ -7,6 +7,7 @@ import com.google.firebase.firestore.firestore
 import com.google.firebase.firestore.toObjects
 import com.spotmap.spotmapandroid.Class.Skater
 import com.spotmap.spotmapandroid.Class.Spot
+import com.spotmap.spotmapandroid.Class.SpotFeed
 import com.spotmap.spotmapandroid.Class.SpotRef
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlin.coroutines.resume
@@ -19,7 +20,7 @@ class APIService(val db: FirebaseFirestore = Firebase.firestore) {
             .get()
             .addOnSuccessListener { result ->
                 try {
-                    val spots = result.toObjects<Spot.SpotFeed>().mapNotNull { Spot.create(it) }
+                    val spots = result.toObjects<SpotFeed>().mapNotNull { Spot.create(it) }
                     continuation.resume(spots)
                 } catch (e: Exception) {
                     continuation.resumeWithException(e)

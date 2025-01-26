@@ -19,62 +19,24 @@ class Spot(
     val creationDate: Date = Date(System.currentTimeMillis()),
     val creator: SkaterLight,
     val name: String,
-    val address: String,
+    val description: String,
     spotEnum: SpotType,
     val coordinate: Coordinate,
-    var imageUrl: String
-) : Parcelable {
+    var imageUrls: List<String>
+) {
 
     private val type = spotEnum.name
 
     fun getType(): SpotType {
         return SpotType.valueOf(type)
     }
-
-    // Constructor for Parcelable
-    constructor(parcel: Parcel) : this(
-        parcel.readString() ?: UUID.randomUUID().toString(), // id
-        Date(parcel.readLong()), // creationDate
-        parcel.readParcelable<SkaterLight>(SkaterLight::class.java.classLoader)!!, // creator
-        parcel.readString() ?: "", // name
-        parcel.readString() ?: "", // address
-        SpotType.valueOf(parcel.readString() ?: SpotType.Street.name), // spotEnum
-        parcel.readParcelable<Coordinate>(Coordinate::class.java.classLoader)!!, // coordinate
-        parcel.readString() ?: "" // imageUrl
-    )
-
-    // Method to write the object to a Parcel
-    override fun writeToParcel(parcel: Parcel, flags: Int) {
-        parcel.writeString(id)
-        parcel.writeLong(creationDate.time)
-        parcel.writeParcelable(creator, flags)
-        parcel.writeString(name)
-        parcel.writeString(address)
-        parcel.writeString(type)
-        parcel.writeParcelable(coordinate, flags)
-        parcel.writeString(imageUrl)
-    }
-
-    // Describe the contents
-    override fun describeContents(): Int = 0
-
-    // Companion object for Parcelable.Creator
-    companion object CREATOR : Parcelable.Creator<Spot> {
-        override fun createFromParcel(parcel: Parcel): Spot {
-            return Spot(parcel)
-        }
-
-        override fun newArray(size: Int): Array<Spot?> {
-            return arrayOfNulls(size)
-        }
-
-        // Factory method to create a Spot from a SpotFeed
+    companion object {
         fun create(feed: SpotFeed?): Spot? {
             if (feed?.id != null
                 && feed.name != null
                 && feed.creationDate != null
                 && feed.address != null
-                && feed.imageUrl != null
+                && feed.imageUrls != null
                 && feed.type != null
             ) {
                 val creator = SkaterLight.create(feed.creator)
@@ -85,64 +47,30 @@ class Spot(
                         id = feed.id,
                         name = feed.name,
                         creator = creator,
-                        address = feed.address,
+                        description = feed.address,
                         coordinate = coordinate,
                         spotEnum = SpotType.valueOf(feed.type),
-                        imageUrl = feed.imageUrl
+                        imageUrls = feed.imageUrls
                     )
                 }
             }
             return null
         }
     }
+}
 
-    // SpotFeed class should also implement Parcelable
-    class SpotFeed(
-        val id: String? = null,
-        val creationDate: Date? = null,
-        val creator: SkaterLight.SkaterLightFeed? = null,
-        val name: String? = null,
-        val address: String? = null,
-        val type: String? = null,
-        val coordinate: Coordinate.CoordinateFeed? = null,
-        val imageUrl: String? = null
-    ) : Parcelable {
 
-        // Constructor for Parcelable
-        constructor(parcel: Parcel) : this(
-            parcel.readString(), // id
-            Date(parcel.readLong()), // creationDate
-            parcel.readParcelable<SkaterLight.SkaterLightFeed>(SkaterLight.SkaterLightFeed::class.java.classLoader),
-            parcel.readString(), // name
-            parcel.readString(), // address
-            parcel.readString(), // type
-            parcel.readParcelable<Coordinate.CoordinateFeed>(Coordinate.CoordinateFeed::class.java.classLoader),
-            parcel.readString() // imageUrl
-        )
+// SpotFeed class should also implement Parcelable
+class SpotFeed(
+    val id: String? = null,
+    val creationDate: Date? = null,
+    val creator: SkaterLight.SkaterLightFeed? = null,
+    val name: String? = null,
+    val address: String? = null,
+    val type: String? = null,
+    val coordinate: Coordinate.CoordinateFeed? = null,
+    val imageUrls: List<String>? = null
+) {
 
-        // Write the properties to the parcel
-        override fun writeToParcel(parcel: Parcel, flags: Int) {
-            parcel.writeString(id)
-            parcel.writeLong(creationDate?.time ?: 0L)
-            parcel.writeParcelable(creator, flags)
-            parcel.writeString(name)
-            parcel.writeString(address)
-            parcel.writeString(type)
-            parcel.writeParcelable(coordinate, flags)
-            parcel.writeString(imageUrl)
-        }
 
-        // Describe the contents
-        override fun describeContents(): Int = 0
-
-        companion object CREATOR : Parcelable.Creator<SpotFeed> {
-            override fun createFromParcel(parcel: Parcel): SpotFeed {
-                return SpotFeed(parcel)
-            }
-
-            override fun newArray(size: Int): Array<SpotFeed?> {
-                return arrayOfNulls(size)
-            }
-        }
-    }
 }

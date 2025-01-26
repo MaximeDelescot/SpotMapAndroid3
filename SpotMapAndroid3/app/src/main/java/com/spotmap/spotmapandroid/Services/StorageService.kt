@@ -8,6 +8,10 @@ import com.google.firebase.Firebase
 import com.google.firebase.storage.storage
 import com.spotmap.spotmapandroid.Class.Spot
 import java.io.ByteArrayOutputStream
+import java.util.UUID
+import kotlin.coroutines.resume
+import kotlin.coroutines.resumeWithException
+import kotlin.coroutines.suspendCoroutine
 
 class StorageService() {
 
@@ -18,28 +22,27 @@ class StorageService() {
         fun onFailure()
     }
 
-    fun save(imageView: ImageView, spot: Spot, callback: UploadCallback) {
+    suspend fun save(imageView: ImageView, spot: Spot): String {
+        return suspendCoroutine { continuation ->
+            val storageRef = storage.reference
+            val id = UUID.randomUUID().toString()
+            val spaceRef = storageRef.child("Spots/${spot.id}/$id.jpg")
 
-        var storageRef = storage.reference
-        var spaceRef = storageRef.child("Spots/${spot.id}/1.jpg")
+            val bitmap = (imageView.drawable as BitmapDrawable).bitmap
+            val baos = ByteArrayOutputStream()
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 35, baos)
+            val data = baos.toByteArray()
 
-//        imageView.isDrawingCacheEnabled = true
-//        imageView.buildDrawingCache()
-        val bitmap = (imageView.drawable as BitmapDrawable).bitmap
-        val baos = ByteArrayOutputStream()
-        bitmap.compress(Bitmap.CompressFormat.JPEG, 35, baos)
-        val data = baos.toByteArray()
+            val uploadTask = spaceRef.putBytes(data)
 
-        val uploadTask = spaceRef.putBytes(data)
-
-        uploadTask.addOnFailureListener {
-            Log.d("STORAGE", "failed")
-            callback.onFailure()
-        }.addOnSuccessListener { taskSnapshot ->
-            Log.d("STORAGE", "succeed")
-            taskSnapshot.storage.downloadUrl.addOnSuccessListener { uri ->
-                callback.onSuccess(uri.toString())
+            uploadTask.addOnFailureListener {
+                continuation.resumeWithException(Throwable("Failed to upload image"))
+            }.addOnSuccessListener { taskSnapshot ->
+                taskSnapshot.storage.downloadUrl.addOnSuccessListener { uri ->
+                    continuation.resume(uri.toString()) // Success result
+                }
             }
         }
     }
+
 }

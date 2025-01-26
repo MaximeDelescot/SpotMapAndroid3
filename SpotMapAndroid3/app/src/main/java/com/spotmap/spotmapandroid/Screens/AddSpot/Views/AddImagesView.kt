@@ -1,5 +1,6 @@
 package com.spotmap.spotmapandroid.Screens.AddSpot.Views
 
+import android.net.Uri
 import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -22,6 +23,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ColorFilter
@@ -42,11 +44,12 @@ fun AddImagesView(modifier: Modifier = Modifier,
                   currentIndex: Int,
                   numberOfPage: Int,
                   previousButtonTapped: ()->Unit = {},
-                  creationButtonTapped: ()->Unit = {}) {
+                  creationButtonTapped: ()->Unit = {},
+                  imageSelected: SnapshotStateList<Uri>) {
 
     TitleText("Select images (3/3)")
     BasicSpacer()
-    ImagesSelectorView()
+    ImagesSelectorView(imageSelected = imageSelected)
     BasicSpacer()
     GeneralButton("CREATE THE SPOT", onClick = { creationButtonTapped() })
     BasicSpacer()
