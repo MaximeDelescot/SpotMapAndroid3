@@ -1,16 +1,31 @@
 package com.spotmap.spotmapandroid.Services
 
+import androidx.compose.runtime.remember
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.UserProfileChangeRequest
 import com.spotmap.spotmapandroid.Class.Skater
 import com.spotmap.spotmapandroid.Class.SkaterLight
+import com.spotmap.spotmapandroid.Screens.Account.AccountScreenViewModel.DisplayedView
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlin.coroutines.resumeWithException
 
 class UserHandler(val apiService: APIService) {
 
     private var auth: FirebaseAuth = FirebaseAuth.getInstance()
+
+    private val _userDidUpdate = MutableLiveData<Unit>()
+    val userDidUpdate: LiveData<Unit> get() = _userDidUpdate
+
+    private val authStateListener = FirebaseAuth.AuthStateListener {
+        _userDidUpdate.value = Unit
+    }
+
+    init {
+        auth.addAuthStateListener(authStateListener)
+    }
 
     fun getUser(): Skater? {
         val user = auth.currentUser

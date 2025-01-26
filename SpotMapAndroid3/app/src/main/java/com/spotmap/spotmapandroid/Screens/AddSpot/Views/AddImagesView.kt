@@ -48,7 +48,7 @@ fun AddImagesView(modifier: Modifier = Modifier,
     BasicSpacer()
     ImagesSelectorView()
     BasicSpacer()
-    GeneralButton("CREATE SPOT", onClick = { creationButtonTapped() })
+    GeneralButton("CREATE THE SPOT", onClick = { creationButtonTapped() })
     BasicSpacer()
     GeneralButton("Previous", onClick = { previousButtonTapped() }, style = GeneralButtonStyle.SECONDARY)
     BasicSpacer()

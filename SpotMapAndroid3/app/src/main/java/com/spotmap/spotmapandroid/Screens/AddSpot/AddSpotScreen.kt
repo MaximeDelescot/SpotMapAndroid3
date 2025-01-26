@@ -1,5 +1,6 @@
 package com.spotmap.spotmapandroid.Screens.AddSpot
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -24,6 +25,7 @@ import com.spotmap.spotmapandroid.Screens.Account.AccountScreenViewModel
 import com.spotmap.spotmapandroid.Screens.AddSpot.Views.AddGeneralInformationView
 import com.spotmap.spotmapandroid.Screens.AddSpot.Views.AddImagesView
 import com.spotmap.spotmapandroid.Screens.AddSpot.Views.AddLocationView
+import com.spotmap.spotmapandroid.Screens.AddSpot.Views.NoLoggedView
 import com.spotmap.spotmapandroid.Services.APIService
 import com.spotmap.spotmapandroid.Services.StorageService
 import com.spotmap.spotmapandroid.Services.UserHandler
@@ -38,6 +40,8 @@ fun AddSpotScreen(modifier: Modifier = Modifier,
     val currentPage = remember { mutableStateOf(0) }
     val coroutineScope = rememberCoroutineScope()
     val pagerState = rememberPagerState(initialPage = currentPage.value, pageCount = { numberOfPages })
+
+    val displayedView = viewModel.viewToDisplay.observeAsState(AddSpotScreenViewModel.AddSpotScreenViewType.`NOT-LOGGED`)
 
     var nameText = remember { mutableStateOf("") }
     var descriptionText = remember { mutableStateOf("") }
@@ -68,48 +72,52 @@ fun AddSpotScreen(modifier: Modifier = Modifier,
 
     Column(modifier = modifier.background(color = colorResource(id = R.color.BackgroundColor))) {
 
-        HorizontalPager(
-            state = pagerState,
-            userScrollEnabled = false,
-            modifier = Modifier
-                .fillMaxWidth()
-        ) { page ->
-            Column(
-                modifier = modifier.fillMaxHeight(),
-                verticalArrangement = Arrangement.Top
-            ) {
+        if (displayedView.value == AddSpotScreenViewModel.AddSpotScreenViewType.`NOT-LOGGED`) {
+            NoLoggedView()
+        } else {
+            HorizontalPager(
+                state = pagerState,
+                userScrollEnabled = false,
+                modifier = Modifier
+                    .fillMaxWidth()
+            ) { page ->
                 Column(
-                    verticalArrangement = Arrangement.Top,
-                    modifier = modifier
-                        .padding(16.dp)
-                        .background(
-                            color = colorResource(id = R.color.SecondaryColor),
-                            shape = RoundedCornerShape(16.dp)
-                        )
-                        .padding(start = 16.dp, end = 16.dp, top = 32.dp, bottom = 32.dp)
+                    modifier = modifier.fillMaxHeight(),
+                    verticalArrangement = Arrangement.Top
                 ) {
-                    when (page) {
-                        0 -> AddGeneralInformationView(
-                            modifier,
-                            nameText = nameText,
-                            descriptionText = descriptionText,
-                            currentIndex = 0,
-                            numberOfPage = numberOfPages,
-                            nextButtonTapped = { goToNext() }
-                        )
-                        1 -> AddLocationView(
-                            modifier,
-                            currentIndex = 1,
-                            numberOfPage = numberOfPages,
-                            nextButtonTapped = { goToNext() },
-                            previousButtonTapped = { goToPrevious() }
-                        )
-                        2 -> AddImagesView(
-                            modifier,
-                            currentIndex = 2,
-                            numberOfPage = numberOfPages,
-                            previousButtonTapped = { goToPrevious() },
-                            creationButtonTapped = { createSpot() })
+                    Column(
+                        verticalArrangement = Arrangement.Top,
+                        modifier = modifier
+                            .padding(16.dp)
+                            .background(
+                                color = colorResource(id = R.color.SecondaryColor),
+                                shape = RoundedCornerShape(16.dp)
+                            )
+                            .padding(start = 16.dp, end = 16.dp, top = 32.dp, bottom = 32.dp)
+                    ) {
+                        when (page) {
+                            0 -> AddGeneralInformationView(
+                                modifier,
+                                nameText = nameText,
+                                descriptionText = descriptionText,
+                                currentIndex = 0,
+                                numberOfPage = numberOfPages,
+                                nextButtonTapped = { goToNext() }
+                            )
+                            1 -> AddLocationView(
+                                modifier,
+                                currentIndex = 1,
+                                numberOfPage = numberOfPages,
+                                nextButtonTapped = { goToNext() },
+                                previousButtonTapped = { goToPrevious() }
+                            )
+                            2 -> AddImagesView(
+                                modifier,
+                                currentIndex = 2,
+                                numberOfPage = numberOfPages,
+                                previousButtonTapped = { goToPrevious() },
+                                creationButtonTapped = { createSpot() })
+                        }
                     }
                 }
             }
