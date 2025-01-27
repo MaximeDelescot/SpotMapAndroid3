@@ -35,7 +35,7 @@ class Spot(
             if (feed?.id != null
                 && feed.name != null
                 && feed.creationDate != null
-                && feed.address != null
+                && feed.description != null
                 && feed.imageUrls != null
                 && feed.type != null
             ) {
@@ -47,7 +47,7 @@ class Spot(
                         id = feed.id,
                         name = feed.name,
                         creator = creator,
-                        description = feed.address,
+                        description = feed.description,
                         coordinate = coordinate,
                         spotEnum = SpotType.valueOf(feed.type),
                         imageUrls = feed.imageUrls
@@ -66,7 +66,7 @@ class SpotFeed(
     val creationDate: Date? = null,
     val creator: SkaterLight.SkaterLightFeed? = null,
     val name: String? = null,
-    val address: String? = null,
+    val description: String? = null,
     val type: String? = null,
     val coordinate: Coordinate.CoordinateFeed? = null,
     val imageUrls: List<String>? = null

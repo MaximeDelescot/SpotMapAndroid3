@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
@@ -13,6 +14,7 @@ import com.spotmap.spotmapandroid.Screens.Account.AccountScreenViewModel
 import com.spotmap.spotmapandroid.Screens.AddSpot.AddSpotScreen
 import com.spotmap.spotmapandroid.Screens.AddSpot.AddSpotScreenViewModel
 import com.spotmap.spotmapandroid.Screens.Map.MapScreen
+import com.spotmap.spotmapandroid.Screens.Map.MapScreenViewModel
 import com.spotmap.spotmapandroid.Screens.Social.SocialScreen
 import com.spotmap.spotmapandroid.Screens.SpotDetails.SpotDetailsScreen
 import com.spotmap.spotmapandroid.Screens.UserDetails.UserDetailsScreen
@@ -29,6 +31,8 @@ fun MainApp() {
 
     val accountViewModel = AccountScreenViewModel(userHandler)
     val addSpotViewModel = AddSpotScreenViewModel(userHandler, apiService, storageService)
+    val mapViewModel = MapScreenViewModel(apiService = apiService)
+
 
     Scaffold(
         bottomBar = { BottomBar(navController = navController) }
@@ -39,7 +43,9 @@ fun MainApp() {
             modifier = Modifier.padding(innerPadding).fillMaxSize()
         ) {
             composable("map") {
-                MapScreen(navController = navController)
+                MapScreen(
+                    navController = navController,
+                    viewModel = mapViewModel)
             }
             composable("social") {
                 SocialScreen()

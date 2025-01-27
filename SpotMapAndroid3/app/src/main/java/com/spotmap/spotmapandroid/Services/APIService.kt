@@ -1,5 +1,6 @@
 package com.spotmap.spotmapandroid.Services
 
+import android.util.Log
 import androidx.compose.runtime.rememberUpdatedState
 import com.google.firebase.Firebase
 import com.google.firebase.firestore.FirebaseFirestore
