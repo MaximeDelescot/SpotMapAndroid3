@@ -10,8 +10,10 @@ import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavController
+import com.google.android.gms.maps.GoogleMapOptions
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.MapColorScheme
 import com.google.maps.android.compose.GoogleMap
 import com.google.maps.android.compose.Marker
 import com.google.maps.android.compose.MarkerState
@@ -37,8 +39,9 @@ fun MapScreen(navController: NavController,
 
     GoogleMap(
         modifier = Modifier.fillMaxSize(),
-        cameraPositionState = cameraPositionState
-    ) {
+        cameraPositionState = cameraPositionState,
+        googleMapOptionsFactory = { GoogleMapOptions().mapColorScheme(MapColorScheme.DARK) },
+        ) {
         if (spots != null) {
             for (spot in spots) {
                 Marker(
