@@ -23,6 +23,9 @@ import com.spotmap.spotmapandroid.Class.SkaterLight
 import com.spotmap.spotmapandroid.Class.Spot
 import com.spotmap.spotmapandroid.Class.SpotType
 import com.spotmap.spotmapandroid.Screens.AddSpot.AddSpotScreenViewModel
+import com.google.android.gms.maps.model.BitmapDescriptorFactory
+import com.spotmap.spotmapandroid.R
+
 
 @Composable
 fun MapScreen(navController: NavController,
@@ -42,12 +45,23 @@ fun MapScreen(navController: NavController,
         cameraPositionState = cameraPositionState,
         googleMapOptionsFactory = { GoogleMapOptions().mapColorScheme(MapColorScheme.DARK) },
         ) {
+
+
+
         if (spots != null) {
             for (spot in spots) {
+
+                val icon = if (spot.getType() == SpotType.Park) {
+                    BitmapDescriptorFactory.fromResource(R.drawable.marker_1)
+                } else {
+                    BitmapDescriptorFactory.fromResource(R.drawable.marker_2)
+                }
+
                 Marker(
                     state = MarkerState(position = spot.coordinate.getLatLong()),
                     title = spot.name,
-                    snippet = null
+                    snippet = null,
+                    icon = icon
                 )
             }
         }
