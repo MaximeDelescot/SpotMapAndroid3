@@ -9,6 +9,15 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.sp
 import com.spotmap.spotmapandroid.R
 
+@Composable
+fun SmallNormalText(text: String, color: Color = colorResource(id = R.color.LightColor), textAlign: TextAlign? = null) {
+    Text(text,
+        textAlign = textAlign,
+        color = color,
+        fontWeight = FontWeight.Normal,
+        fontSize = 12.sp)
+}
+
 
 @Composable
 fun NormalText(text: String, color: Color = colorResource(id = R.color.LightColor), textAlign: TextAlign? = null) {
@@ -16,7 +25,7 @@ fun NormalText(text: String, color: Color = colorResource(id = R.color.LightColo
         textAlign = textAlign,
         color = color,
         fontWeight = FontWeight.Normal,
-        fontSize = 20.sp)
+        fontSize = 18.sp)
 }
 
 @Composable
@@ -25,7 +34,7 @@ fun TitleText(text: String, color: Color = colorResource(id = R.color.LightColor
         textAlign = textAlign,
         color = color,
         fontWeight = FontWeight.Bold,
-        fontSize = 20.sp)
+        fontSize = 18.sp)
 }
 
 @Composable
