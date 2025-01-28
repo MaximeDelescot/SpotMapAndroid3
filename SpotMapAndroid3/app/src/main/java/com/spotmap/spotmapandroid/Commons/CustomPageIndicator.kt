@@ -23,9 +23,9 @@ import androidx.compose.ui.unit.dp
 import com.spotmap.spotmapandroid.R
 
 @Composable
-fun CustomPageIndicator(currentIndex: MutableState<Int>, indexCount: Int) {
+fun CustomPageIndicator(modifier: Modifier = Modifier, currentIndex: MutableState<Int>, indexCount: Int) {
     Row(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.Center
     ) {
         for (i in 0 until indexCount) {

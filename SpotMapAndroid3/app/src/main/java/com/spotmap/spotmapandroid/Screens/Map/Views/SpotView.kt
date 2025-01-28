@@ -25,6 +25,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.SideEffect
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -44,6 +45,7 @@ import coil.compose.AsyncImage
 import coil.compose.rememberImagePainter
 import com.spotmap.spotmapandroid.Class.Spot
 import com.spotmap.spotmapandroid.Commons.BasicSpacer
+import com.spotmap.spotmapandroid.Commons.CustomPageIndicator
 import com.spotmap.spotmapandroid.Commons.LargeTitleText
 import com.spotmap.spotmapandroid.Commons.SmallNormalText
 import com.spotmap.spotmapandroid.Commons.TitleText
@@ -62,10 +64,12 @@ fun SpotView(modifier: Modifier = Modifier, spot: MutableState<Spot?>) {
             .clip(RoundedCornerShape(16.dp))
             .background(colorResource(id = R.color.SecondaryColor))) {
 
+        val urls = remember(spot.value) { mutableStateOf(spot.value?.imageUrls ?: listOf()) }
+
         Row(modifier = modifier.fillMaxSize().padding(16.dp),
             horizontalArrangement = Arrangement.Start,
             verticalAlignment = Alignment.CenterVertically) {
-            SmallImagesView(urls = spot.value?.imageUrls ?: listOf())
+            SmallImagesView(urls = urls)
             Spacer(Modifier.width(16.dp))
             Column(modifier = Modifier.fillMaxHeight().weight(1f)) {
                 SmallNormalText(spot.value?.getType().toString().uppercase(), color = colorResource(id= R.color.LightColor))
@@ -82,7 +86,10 @@ fun SpotView(modifier: Modifier = Modifier, spot: MutableState<Spot?>) {
 }
 
 @Composable
-fun SmallImagesView(urls: List<String>) {
+fun SmallImagesView(urls: MutableState<List<String>>) {
+
+    val currentIndex: MutableState<Int> = remember() { mutableStateOf(0) }
+
     Box(
         modifier = Modifier.clip(RoundedCornerShape(8.dp))
             .fillMaxHeight()
@@ -92,35 +99,52 @@ fun SmallImagesView(urls: List<String>) {
         InfiniteCarousel(
             modifier = Modifier.fillMaxSize(),
             scrollTime = 3,
-            imageUrls = urls)
+            imageUrls = urls,
+            currentIndex = currentIndex)
+        CustomPageIndicator(
+            modifier = Modifier.padding(8.dp).align(Alignment.BottomCenter),
+            currentIndex = currentIndex,
+            indexCount = urls.value.size)
     }
 }
-
 @Composable
 private fun InfiniteCarousel(
     modifier: Modifier,
-    imageUrls: List<String>,
+    imageUrls: MutableState<List<String>>,
     scrollTime: Int? = null,
+    currentIndex: MutableState<Int>,
     scrollEnable: Boolean = false
 ) {
     Column(
         modifier = modifier.fillMaxSize()
     ) {
-        val pageCount = imageUrls.size * 400
+        val pageCount = imageUrls.value.size * 400
         val pagerState = rememberPagerState(
             initialPage = pageCount / 2,
             pageCount = { pageCount }
         )
 
-        // Auto-scroll logic
-        LaunchedEffect(scrollTime) {
-            if (scrollTime != null && imageUrls.size > 1) {
+        // Réinitialisation instantanée de currentIndex lorsque les URLs changent
+        LaunchedEffect(imageUrls.value) {
+            currentIndex.value = 0 // Réinitialise à la première image
+            pagerState.scrollToPage(pageCount / 2) // Reset du pager à la position initiale
+        }
+
+        // Défilement automatique
+        LaunchedEffect(scrollTime, imageUrls.value) {
+            if (scrollTime != null && imageUrls.value.size > 1) {
                 while (isActive) {
                     delay((scrollTime * 1000).toLong())
                     val nextPage = (pagerState.currentPage + 1) % pageCount
+                    currentIndex.value = nextPage % imageUrls.value.size
                     pagerState.animateScrollToPage(nextPage)
                 }
             }
+        }
+
+        // Synchroniser currentIndex avec les pages scrollées manuellement
+        LaunchedEffect(pagerState.currentPage) {
+            currentIndex.value = pagerState.currentPage % imageUrls.value.size
         }
 
         HorizontalPager(
@@ -133,12 +157,10 @@ private fun InfiniteCarousel(
                 AsyncImage(
                     contentScale = ContentScale.Crop,
                     modifier = Modifier.fillMaxSize(),
-                    model = imageUrls[page % imageUrls.size],
+                    model = imageUrls.value[page % imageUrls.value.size],
                     contentDescription = null
                 )
             }
         }
     }
 }
-
-
