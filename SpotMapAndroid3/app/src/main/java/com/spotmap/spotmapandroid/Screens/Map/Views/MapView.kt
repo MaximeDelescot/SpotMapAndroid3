@@ -1,7 +1,6 @@
-package com.spotmap.spotmapandroid.Screens.Map
+package com.spotmap.spotmapandroid.Screens.Map.Views
 
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.ui.Modifier
