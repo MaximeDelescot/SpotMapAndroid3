@@ -31,8 +31,7 @@ fun MainApp() {
 
     val accountViewModel = AccountScreenViewModel(userHandler)
     val addSpotViewModel = AddSpotScreenViewModel(userHandler, apiService, storageService)
-    val mapViewModel = MapScreenViewModel(apiService = apiService)
-
+    val mapViewModel = MapScreenViewModel(apiService)
 
     Scaffold(
         bottomBar = { BottomBar(navController = navController) }

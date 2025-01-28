@@ -1,5 +1,6 @@
 package com.spotmap.spotmapandroid.Screens.Map
 
+import android.util.Log
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.slideInVertically
@@ -31,6 +32,14 @@ import com.spotmap.spotmapandroid.Commons.IconBorderButton
 import com.spotmap.spotmapandroid.Screens.Map.Views.MapView
 import com.spotmap.spotmapandroid.Screens.Map.Views.SpotView
 import com.spotmap.spotmapandroid.R
+import androidx.compose.ui.platform.LocalContext
+import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationServices
+import com.google.android.gms.maps.model.LatLng
+import com.spotmap.spotmapandroid.Screens.Map.Views.ZoomTarget
+import com.spotmap.spotmapandroid.Services.RequestLocationPermissionUsingRememberMultiplePermissionsState
+import com.spotmap.spotmapandroid.Services.getCurrentLocation
+
 
 @Composable
 fun MapScreen(navController: NavController,
@@ -40,14 +49,35 @@ fun MapScreen(navController: NavController,
     val spots = viewModel.spots.observeAsState().value
     viewModel.loadSpots()
 
+    val context = LocalContext.current
+    val fusedLocationClient: FusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(context)
+
     val spotSelected: MutableState<Spot?> = remember { mutableStateOf(null) }
+    val goToPosition: MutableState<ZoomTarget?> = remember { mutableStateOf(null) }
+
+    fun zoomToCurrentPosition() {
+        getCurrentLocation(context, fusedLocationClient, onGetCurrentLocationSuccess = { coordinate ->
+                goToPosition.value = ZoomTarget(position = LatLng(
+                    coordinate.first,
+                    coordinate.second))
+        }, onGetCurrentLocationFailed = { failed ->
+
+        })
+    }
+
+    RequestLocationPermissionUsingRememberMultiplePermissionsState(
+        onPermissionGranted = { zoomToCurrentPosition() },
+        onPermissionDenied = {Log.d("YOOOO", "2")},
+        onPermissionsRevoked = {Log.d("YOOOO", "3")})
+
 
     Box(modifier = modifier.fillMaxSize()) {
 
         MapView(
             modifier = modifier,
             spots = spots,
-            selectedSpot = spotSelected
+            selectedSpot = spotSelected,
+            zoomPosition = goToPosition
         )
 
         val isVisible = spotSelected.value != null
@@ -60,7 +90,10 @@ fun MapScreen(navController: NavController,
             horizontalAlignment = Alignment.End
         ) {
 
-            IconBorderButton(iconResId = R.drawable.ic_location) { }
+            IconBorderButton(iconResId = R.drawable.ic_location, onClick = {
+                zoomToCurrentPosition()
+            })
+
             Spacer(modifier.height(4.dp))
 
             AnimatedVisibility(

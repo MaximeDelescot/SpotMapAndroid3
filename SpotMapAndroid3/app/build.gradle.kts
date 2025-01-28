@@ -62,6 +62,10 @@ dependencies {
     implementation(libs.androidx.runtime.livedata)
     implementation(libs.androidx.material.icons.extended)
 
+    implementation(libs.play.services.location)
+    implementation(libs.accompanist.permissions)
+
+
     implementation(libs.coil.compose)
 
     implementation(libs.maps.compose)
