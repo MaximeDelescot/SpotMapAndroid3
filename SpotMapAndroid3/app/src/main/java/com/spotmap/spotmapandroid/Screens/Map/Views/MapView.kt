@@ -28,7 +28,7 @@ fun MapView(modifier: Modifier = Modifier, spots: List<Spot>?, selectedSpot: Mut
     GoogleMap(
         modifier = modifier.fillMaxSize(),
         cameraPositionState = cameraPositionState,
-        googleMapOptionsFactory = { GoogleMapOptions().mapColorScheme(MapColorScheme.DARK) },
+        googleMapOptionsFactory = { GoogleMapOptions().mapColorScheme(MapColorScheme.DARK) }
     ) {
 
         if (spots != null) {

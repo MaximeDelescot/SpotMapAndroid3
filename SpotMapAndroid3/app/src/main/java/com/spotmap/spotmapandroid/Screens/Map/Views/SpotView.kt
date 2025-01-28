@@ -60,7 +60,6 @@ import kotlinx.coroutines.isActive
 fun SpotView(modifier: Modifier = Modifier, spot: MutableState<Spot?>) {
     Box(
         modifier = modifier.fillMaxSize()
-            .padding(8.dp)
             .clip(RoundedCornerShape(16.dp))
             .background(colorResource(id = R.color.SecondaryColor))) {
 
@@ -124,13 +123,11 @@ private fun InfiniteCarousel(
             pageCount = { pageCount }
         )
 
-        // Réinitialisation instantanée de currentIndex lorsque les URLs changent
         LaunchedEffect(imageUrls.value) {
-            currentIndex.value = 0 // Réinitialise à la première image
-            pagerState.scrollToPage(pageCount / 2) // Reset du pager à la position initiale
+            currentIndex.value = 0
+            pagerState.scrollToPage(pageCount / 2)
         }
 
-        // Défilement automatique
         LaunchedEffect(scrollTime, imageUrls.value) {
             if (scrollTime != null && imageUrls.value.size > 1) {
                 while (isActive) {
@@ -142,7 +139,6 @@ private fun InfiniteCarousel(
             }
         }
 
-        // Synchroniser currentIndex avec les pages scrollées manuellement
         LaunchedEffect(pagerState.currentPage) {
             currentIndex.value = pagerState.currentPage % imageUrls.value.size
         }

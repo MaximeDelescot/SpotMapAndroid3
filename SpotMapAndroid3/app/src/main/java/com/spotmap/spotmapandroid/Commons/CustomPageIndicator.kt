@@ -31,7 +31,7 @@ fun CustomPageIndicator(modifier: Modifier = Modifier, currentIndex: MutableStat
         for (i in 0 until indexCount) {
             CustomIndicator(isSelected = (i == currentIndex.value))
             if (i < indexCount - 1) {
-                Spacer(modifier = Modifier.width(6.dp)) // Espace entre les indicateurs
+                Spacer(modifier = Modifier.width(6.dp))
             }
         }
     }
