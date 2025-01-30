@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -57,11 +58,14 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
 
 @Composable
-fun SpotView(modifier: Modifier = Modifier, spot: MutableState<Spot?>) {
+fun SpotView(modifier: Modifier = Modifier,
+             spot: MutableState<Spot?>,
+             onClick: () -> Unit) {
     Box(
         modifier = modifier.fillMaxSize()
             .clip(RoundedCornerShape(16.dp))
-            .background(colorResource(id = R.color.SecondaryColor))) {
+            .background(colorResource(id = R.color.SecondaryColor))
+            .clickable { onClick() }) {
 
         val urls = remember(spot.value) { mutableStateOf(spot.value?.imageUrls ?: listOf()) }
 
@@ -107,7 +111,7 @@ fun SmallImagesView(urls: MutableState<List<String>>) {
     }
 }
 @Composable
-private fun InfiniteCarousel(
+fun InfiniteCarousel(
     modifier: Modifier,
     imageUrls: MutableState<List<String>>,
     scrollTime: Int? = null,

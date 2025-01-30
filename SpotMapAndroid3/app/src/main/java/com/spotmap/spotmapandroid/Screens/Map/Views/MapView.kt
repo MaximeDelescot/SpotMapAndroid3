@@ -42,7 +42,7 @@ fun MapView(
     LaunchedEffect(zoomPosition.value) {
         zoomPosition.value?.let { newPosition ->
             cameraPositionState.animate(
-                CameraUpdateFactory.newLatLngZoom(newPosition.position, 10f),
+                CameraUpdateFactory.newLatLngZoom(newPosition.position, 12f),
                 1000
             )
         }

@@ -37,6 +37,7 @@ import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.model.LatLng
 import com.spotmap.spotmapandroid.Screens.Map.Views.ZoomTarget
+import com.spotmap.spotmapandroid.Screens.SpotDetails.SpotDetailsScreenViewModel
 import com.spotmap.spotmapandroid.Services.RequestLocationPermissionUsingRememberMultiplePermissionsState
 import com.spotmap.spotmapandroid.Services.getCurrentLocation
 
@@ -44,7 +45,8 @@ import com.spotmap.spotmapandroid.Services.getCurrentLocation
 @Composable
 fun MapScreen(navController: NavController,
               modifier: Modifier = Modifier,
-              viewModel: MapScreenViewModel) {
+              viewModel: MapScreenViewModel,
+              spotDetailsScreenViewModel: SpotDetailsScreenViewModel) {
 
     val spots = viewModel.spots.observeAsState().value
     viewModel.loadSpots()
@@ -113,7 +115,14 @@ fun MapScreen(navController: NavController,
                 spotSelected.value?.let { spot ->
                     SpotView(
                         modifier = Modifier,
-                        spot = spotSelected
+                        spot = spotSelected,
+                        onClick = {
+                            var spot = spotSelected.value
+                            if (spot != null) {
+                                spotDetailsScreenViewModel.setSpot(spot)
+                                navController.navigate("spotDetails")
+                            }
+                        }
                     )
                 }
             }

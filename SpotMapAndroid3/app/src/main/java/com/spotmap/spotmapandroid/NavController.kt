@@ -17,6 +17,7 @@ import com.spotmap.spotmapandroid.Screens.Map.MapScreen
 import com.spotmap.spotmapandroid.Screens.Map.MapScreenViewModel
 import com.spotmap.spotmapandroid.Screens.Social.SocialScreen
 import com.spotmap.spotmapandroid.Screens.SpotDetails.SpotDetailsScreen
+import com.spotmap.spotmapandroid.Screens.SpotDetails.SpotDetailsScreenViewModel
 import com.spotmap.spotmapandroid.Screens.UserDetails.UserDetailsScreen
 import com.spotmap.spotmapandroid.Services.APIService
 import com.spotmap.spotmapandroid.Services.StorageService
@@ -32,6 +33,7 @@ fun MainApp() {
     val accountViewModel = AccountScreenViewModel(userHandler)
     val addSpotViewModel = AddSpotScreenViewModel(userHandler, apiService, storageService)
     val mapViewModel = MapScreenViewModel(apiService)
+    val spotDetailsModel = SpotDetailsScreenViewModel(apiService)
 
     Scaffold(
         bottomBar = { BottomBar(navController = navController) }
@@ -44,7 +46,8 @@ fun MainApp() {
             composable("map") {
                 MapScreen(
                     navController = navController,
-                    viewModel = mapViewModel)
+                    viewModel = mapViewModel,
+                    spotDetailsScreenViewModel = spotDetailsModel)
             }
             composable("social") {
                 SocialScreen()
@@ -60,7 +63,9 @@ fun MainApp() {
                     viewModel = accountViewModel)
             }
             composable("spotDetails") {
-                SpotDetailsScreen(navController = navController)
+                SpotDetailsScreen(
+                    navController = navController,
+                    viewModel = spotDetailsModel)
             }
             composable("userDetails") {
                 UserDetailsScreen(navController = navController)
