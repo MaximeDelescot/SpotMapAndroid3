@@ -1,11 +1,14 @@
 package com.spotmap.spotmapandroid.Screens.SpotDetails
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -18,11 +21,25 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.NavController
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.runtime.livedata.observeAsState
+import com.spotmap.spotmapandroid.R
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import com.spotmap.spotmapandroid.Screens.Account.AccountScreenViewModel
-import com.spotmap.spotmapandroid.Screens.Map.MapScreenViewModel
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.pointer.motionEventSpy
+import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.unit.dp
+import com.spotmap.spotmapandroid.Class.Spot
+import com.spotmap.spotmapandroid.Commons.CustomPageIndicator
+import com.spotmap.spotmapandroid.Commons.LargeTitleText
+import com.spotmap.spotmapandroid.Commons.NormalText
+import com.spotmap.spotmapandroid.Commons.SmallNormalText
 import com.spotmap.spotmapandroid.Screens.Map.Views.InfiniteCarousel
+import java.nio.file.WatchEvent
+
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -30,7 +47,8 @@ fun SpotDetailsScreen(navController: NavController,
                       modifier: Modifier = Modifier,
                       viewModel: SpotDetailsScreenViewModel) {
 
-    val spot = viewModel.selectedSpot.observeAsState(null)
+    val spot = viewModel.spot.observeAsState(null)
+    val items = viewModel.items.observeAsState(listOf())
 
     Scaffold(
         topBar = {
@@ -40,29 +58,62 @@ fun SpotDetailsScreen(navController: NavController,
                     IconButton(onClick = { navController.popBackStack() }) {
                         Icon(Icons.Filled.ArrowBack, contentDescription = "Retour")
                     }
-                }
+                },
+                colors = TopAppBarDefaults.topAppBarColors(
+                    titleContentColor = colorResource(id = R.color.LightColor),
+                    navigationIconContentColor = colorResource(id = R.color.LightColor),
+                    containerColor = colorResource(id = R.color.SecondaryColor).copy(alpha = 0.8f) // Applique la transparence
+                )
             )
         },
         content = { innerPadding ->
-            Column(
-                verticalArrangement = Arrangement.Top,
-                modifier = Modifier.padding(innerPadding)) {
-                
-
-//                val spot = spot.value
-//                if (spot != null) {
-//                    val currentIndex = remember { mutableStateOf(0) }
-//                    InfiniteCarousel(
-//                        modifier = Modifier
-//                            .fillMaxSize()
-//                            .aspectRatio(4 / 3f),
-//                        scrollTime = 3,
-//                        imageUrls = remember { mutableStateOf(spot.imageUrls) },
-//                        currentIndex = currentIndex)
-//
-//                    Text(spot.name)
-//                }
+            LazyColumn(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(colorResource(id = R.color.BackgroundColor))) {
+                items(items.value) { item ->
+                    when (item) {
+                        SpotDetailsItem.SPOTDETAILS ->
+                            spot.value?.let { SpotDetailsView(it) }
+                        SpotDetailsItem.COMMENTS ->
+                            Text(text = "COMMENTS")
+                    }
+                }
             }
         }
     )
+}
+
+@Composable
+fun SpotDetailsView(spot: Spot) {
+
+    val currentIndex = remember { mutableStateOf(0) }
+
+    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+        InfiniteCarousel(
+            modifier = Modifier
+                .fillMaxSize()
+                .aspectRatio(4 / 3f),
+            scrollTime = 3,
+            scrollEnable = true,
+            imageUrls = remember { mutableStateOf(spot.imageUrls) },
+            currentIndex = currentIndex)
+        CustomPageIndicator(
+            modifier = Modifier.padding(8.dp),
+            currentIndex = currentIndex,
+            indexCount = spot.imageUrls.size)
+
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp),
+            horizontalAlignment = Alignment.Start) {
+            NormalText(spot.getType().toString().uppercase())
+            LargeTitleText(spot.name)
+            SmallNormalText("Fake address bla 2 bla bla bla ")
+            Spacer(Modifier.height(16.dp))
+            NormalText(spot.description)
+            Spacer(Modifier.height(16.dp))
+        }
+    }
 }

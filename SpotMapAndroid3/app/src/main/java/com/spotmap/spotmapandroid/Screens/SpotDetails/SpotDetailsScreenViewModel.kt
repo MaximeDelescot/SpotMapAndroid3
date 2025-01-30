@@ -8,12 +8,22 @@ import com.spotmap.spotmapandroid.Class.Spot
 import com.spotmap.spotmapandroid.Services.APIService
 import kotlinx.coroutines.launch
 
+enum class SpotDetailsItem {
+    SPOTDETAILS,
+    COMMENTS
+}
+
+
 class SpotDetailsScreenViewModel(val apiService: APIService): ViewModel() {
 
-    private val _selectedSpot = MutableLiveData<Spot?>()
-    val selectedSpot: LiveData<Spot?> = _selectedSpot
+    private val _spot = MutableLiveData<Spot>()
+    val spot: LiveData<Spot> = _spot
+
+    private val _items = MutableLiveData<List<SpotDetailsItem>>()
+    val items: LiveData<List<SpotDetailsItem>> = _items
 
     fun setSpot(spot: Spot) {
-        _selectedSpot.value = spot
+        _spot.value = spot
+        _items.value = listOf( SpotDetailsItem.SPOTDETAILS, SpotDetailsItem.COMMENTS)
     }
 }
