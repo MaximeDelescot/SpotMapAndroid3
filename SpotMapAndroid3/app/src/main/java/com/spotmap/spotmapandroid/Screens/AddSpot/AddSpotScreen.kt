@@ -35,6 +35,7 @@ import com.spotmap.spotmapandroid.Screens.AddSpot.Views.NoLoggedView
 import kotlinx.coroutines.launch
 import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavController
+import kotlin.Boolean
 
 @Composable
 fun AddSpotScreen(navController: NavController,
@@ -85,7 +86,11 @@ fun AddSpotScreen(navController: NavController,
             name = nameText.value,
             description= descriptionText.value,
             type = typeItems[typeIndex.value],
-            selectedImage = selectedImages)
+            selectedImage = selectedImages,
+            needToPay = false,
+            shelteredFromRain = false,
+            hasFixedHours = false,
+            hasLighting = false)
     }
 
     Column(

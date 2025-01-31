@@ -22,6 +22,7 @@ import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -40,6 +41,7 @@ import androidx.compose.ui.graphics.vector.Group
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -51,6 +53,7 @@ import com.spotmap.spotmapandroid.Commons.CustomPageIndicator
 import com.spotmap.spotmapandroid.Commons.LargeTitleText
 import com.spotmap.spotmapandroid.Commons.SmallNormalText
 import com.spotmap.spotmapandroid.Commons.TitleText
+import com.spotmap.spotmapandroid.Commons.VerySmallNormalText
 import com.spotmap.spotmapandroid.R
 import com.spotmap.spotmapandroid.Screens.AddSpot.Views.AddGeneralInformationView
 import com.spotmap.spotmapandroid.Screens.AddSpot.Views.AddImagesView
@@ -63,6 +66,8 @@ import kotlinx.coroutines.isActive
 fun SpotView(modifier: Modifier = Modifier,
              spot: MutableState<Spot?>,
              onClick: () -> Unit) {
+    val boxModifier = modifier.fillMaxSize()
+
     Box(
         modifier = modifier.fillMaxSize()
             .clip(RoundedCornerShape(16.dp))
@@ -76,27 +81,46 @@ fun SpotView(modifier: Modifier = Modifier,
             verticalAlignment = Alignment.CenterVertically) {
             SmallImagesView(urls = urls)
             Spacer(Modifier.width(16.dp))
-            Column(modifier = Modifier.fillMaxHeight().weight(1f)) {
-                SmallNormalText(spot.value?.getType().toString().uppercase(), color = colorResource(id= R.color.LightColor))
-                TitleText(spot.value?.name ?: "", color = colorResource(id= R.color.LightColor))
-                Row(modifier = Modifier.weight(1f),
-                    horizontalArrangement = Arrangement.End) {
-                    IconWithValueView(
-                        iconId=R.drawable.ic_follow,
-                        value = 12)
-                    Spacer(modifier = Modifier.width(4.dp))
-                    Spacer(modifier.height(2.dp))
-                    IconWithValueView(
-                        iconId=R.drawable.ic_comment,
-                        value = 12)
+            Box(modifier = Modifier.weight(1f)) {
+                Row(modifier = Modifier.fillMaxSize(),
+                    verticalAlignment = Alignment.CenterVertically) {
+                    Column(modifier = Modifier.weight(1f)) {
+                        SmallNormalText(
+                            spot.value?.getType().toString().uppercase(),
+                            color = colorResource(id = R.color.LightColor)
+                        )
+                        TitleText(
+                            spot.value?.name ?: "",
+                            maxLine = 2,
+                            color = colorResource(id = R.color.LightColor)
+                        )
+                        Row(horizontalArrangement = Arrangement.End) {
+                            IconWithValueView(iconId = R.drawable.ic_follow, value = 12)
+                            Spacer(modifier = Modifier.width(4.dp))
+                            Spacer(modifier = Modifier.height(2.dp))
+                            IconWithValueView(
+                                iconId = R.drawable.ic_comment,
+                                value = 12
+                            )
+                        }
+                        Spacer(modifier = Modifier.weight(1f))
+                    }
+                    Spacer(Modifier.width(16.dp))
+                    Image(
+                        modifier = Modifier.size(40.dp),
+                        painter = painterResource(id = R.drawable.ic_arrow),
+                        contentDescription = "arrow next",
+                        colorFilter = ColorFilter.tint(colorResource(id = R.color.PrimaryColor))
+                    )
                 }
+                VerySmallNormalText(
+                    modifier = Modifier.align(Alignment.BottomStart),
+                    text = spot.value?.getInfosText() ?: "",
+                    color = colorResource(id = R.color.LightDarker1Color),
+                    maxLine = 1,
+                    overflow = TextOverflow.Ellipsis
+                )
             }
-            Spacer(Modifier.width(16.dp))
-            Image(
-                modifier = Modifier.size(40.dp),
-                painter = painterResource(id = R.drawable.ic_arrow),
-                contentDescription = "arrow next",
-                colorFilter = ColorFilter.tint(colorResource(id = R.color.PrimaryColor)) )
         }
     }
 }

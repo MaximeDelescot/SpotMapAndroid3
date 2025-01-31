@@ -21,6 +21,7 @@ import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.joinAll
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import kotlin.Boolean
 import kotlin.random.Random
 
 class AddSpotScreenViewModel (val userHandler: UserHandler,
@@ -52,7 +53,11 @@ class AddSpotScreenViewModel (val userHandler: UserHandler,
         name: String,
         description: String,
         type: SpotType,
-        selectedImage: List<ImageView>
+        selectedImage: List<ImageView>,
+        needToPay: Boolean,
+        shelteredFromRain: Boolean,
+        hasFixedHours: Boolean,
+        hasLighting: Boolean
     ) {
 
         viewModelScope.launch {
@@ -70,7 +75,11 @@ class AddSpotScreenViewModel (val userHandler: UserHandler,
                     description = description,
                     spotEnum = type,
                     coordinate = Coordinate(fakeLati, fakeLong),
-                    imageUrls = listOf()
+                    imageUrls = listOf(),
+                    needToPay = needToPay,
+                    shelteredFromRain = shelteredFromRain,
+                    hasFixedHours = hasFixedHours,
+                    hasLighting = hasLighting
                 )
 
                 try {

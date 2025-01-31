@@ -16,6 +16,8 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.spotmap.spotmapandroid.Class.Spot
 import com.spotmap.spotmapandroid.Commons.CustomPageIndicator
@@ -25,6 +27,7 @@ import com.spotmap.spotmapandroid.Commons.LargeTitleText
 import com.spotmap.spotmapandroid.Commons.NormalText
 import com.spotmap.spotmapandroid.Commons.SmallNormalText
 import com.spotmap.spotmapandroid.Commons.TitleText
+import com.spotmap.spotmapandroid.Commons.VerySmallNormalText
 import com.spotmap.spotmapandroid.Screens.Map.Views.InfiniteCarousel
 import com.spotmap.spotmapandroid.R
 import java.security.acl.Group
@@ -44,7 +47,6 @@ fun SpotDetailsView(spot: Spot) {
             scrollEnable = true,
             imageUrls = remember { mutableStateOf(spot.imageUrls) },
             currentIndex = currentIndex)
-
 
         Row(modifier = Modifier
             .fillMaxWidth()
@@ -77,7 +79,16 @@ fun SpotDetailsView(spot: Spot) {
                 .fillMaxWidth()
                 .padding(horizontal = 16.dp),
             horizontalAlignment = Alignment.Start) {
-            SmallNormalText(spot.getType().toString().uppercase())
+            Row(verticalAlignment = Alignment.CenterVertically){
+                SmallNormalText(spot.getType().toString().uppercase())
+                Spacer(Modifier.weight(1f))
+                VerySmallNormalText(
+                    text = spot.getInfosText(),
+                    color = colorResource(id = R.color.LightDarker1Color),
+                    maxLine = 1,
+                    overflow = TextOverflow.Ellipsis
+                )
+            }
             TitleText(spot.name)
             SmallNormalText("Fake address bla 2 bla bla bla ")
             Spacer(Modifier.height(16.dp))
