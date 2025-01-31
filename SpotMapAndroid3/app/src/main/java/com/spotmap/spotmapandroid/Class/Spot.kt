@@ -2,6 +2,8 @@ package com.spotmap.spotmapandroid.Class
 
 import android.os.Parcel
 import android.os.Parcelable
+import com.google.firebase.firestore.Exclude
+import com.google.firebase.firestore.IgnoreExtraProperties
 import java.util.Date
 import java.util.UUID
 import kotlin.Boolean
@@ -36,6 +38,7 @@ class Spot(
         return SpotType.valueOf(type)
     }
 
+    @Exclude
     fun getInfosText(): String {
         val strings = mutableListOf<String?>()
 

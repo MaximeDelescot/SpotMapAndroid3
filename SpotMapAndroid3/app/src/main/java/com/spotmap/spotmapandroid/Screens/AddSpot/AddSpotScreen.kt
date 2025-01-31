@@ -56,6 +56,10 @@ fun AddSpotScreen(navController: NavController,
     val imageSelected = remember { mutableStateListOf<Uri>() }
     val typeIndex = remember { mutableStateOf(0) }
     val typeItems = listOf<SpotType>(SpotType.Street, SpotType.Park)
+    var needToPayIsSelected = remember { mutableStateOf(false) }
+    var shelteredFromRainIsSelected = remember { mutableStateOf(false) }
+    var hasFixedHoursIsSelected = remember { mutableStateOf(false) }
+    var hasLightingIsSelected = remember { mutableStateOf(false) }
 
     fun goToNext() {
         coroutineScope.launch {
@@ -87,10 +91,10 @@ fun AddSpotScreen(navController: NavController,
             description= descriptionText.value,
             type = typeItems[typeIndex.value],
             selectedImage = selectedImages,
-            needToPay = false,
-            shelteredFromRain = false,
-            hasFixedHours = false,
-            hasLighting = false)
+            needToPay = needToPayIsSelected.value,
+            shelteredFromRain = shelteredFromRainIsSelected.value,
+            hasFixedHours = hasFixedHoursIsSelected.value,
+            hasLighting = hasLightingIsSelected.value)
     }
 
     Column(
@@ -144,7 +148,11 @@ fun AddSpotScreen(navController: NavController,
                                     numberOfPage = numberOfPages,
                                     typeIndex = typeIndex,
                                     typeItems = typeItems.map{ it.name },
-                                    nextButtonTapped = { goToNext() }
+                                    nextButtonTapped = { goToNext() },
+                                    needToPayIsSelected = needToPayIsSelected,
+                                    shelteredFromRainIsSelected = shelteredFromRainIsSelected,
+                                    hasLightingIsSelected = hasLightingIsSelected,
+                                    hasFixedHoursIsSelected = hasFixedHoursIsSelected
                                 )
                                 1 -> AddLocationView(
                                     modifier,

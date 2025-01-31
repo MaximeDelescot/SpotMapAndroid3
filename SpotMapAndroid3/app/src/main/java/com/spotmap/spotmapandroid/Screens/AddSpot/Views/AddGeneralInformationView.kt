@@ -23,12 +23,11 @@ fun AddGeneralInformationView(modifier: Modifier,
                               numberOfPage: Int,
                               typeItems: List<String>,
                               typeIndex: MutableState<Int>,
+                              needToPayIsSelected: MutableState<Boolean>,
+                              shelteredFromRainIsSelected: MutableState<Boolean>,
+                              hasFixedHoursIsSelected: MutableState<Boolean>,
+                              hasLightingIsSelected: MutableState<Boolean>,
                               nextButtonTapped: ()->Unit) {
-
-    var isPayableSelected = remember { mutableStateOf(false) }
-    var isDIYSelected = remember { mutableStateOf(false) }
-    var isWaterSelected = remember { mutableStateOf(false) }
-
 
     var buttonIsEnable = if(nameText.value.isEmpty()) { false } else { true }
 
@@ -51,13 +50,16 @@ fun AddGeneralInformationView(modifier: Modifier,
     BasicSpacer()
     CheckboxWithTitle(
         title = "Need to pay access",
-        isChecked = isPayableSelected)
+        isChecked = needToPayIsSelected)
     CheckboxWithTitle(
-        title = "Is D.I.Y",
-        isChecked = isDIYSelected)
+        title = "Sheltered from the rain",
+        isChecked = shelteredFromRainIsSelected)
     CheckboxWithTitle(
-        title = "Has access to water",
-        isChecked = isWaterSelected)
+        title = "Has fixed opening hours",
+        isChecked = hasFixedHoursIsSelected)
+    CheckboxWithTitle(
+        title ="Has lighting",
+        isChecked = hasLightingIsSelected)
     BasicSpacer()
     GeneralButton(
         modifier.fillMaxWidth(),

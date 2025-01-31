@@ -51,7 +51,7 @@ fun SpotDetailsView(spot: Spot) {
         Row(modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = 16.dp,
-            vertical = 4.dp),
+            vertical = 8.dp),
             verticalAlignment = Alignment.CenterVertically) {
 
             Spacer(modifier = Modifier.weight(1f))
@@ -72,7 +72,6 @@ fun SpotDetailsView(spot: Spot) {
                     value = 12)
             }
         }
-
 
         Column(
             modifier = Modifier
