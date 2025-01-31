@@ -24,6 +24,7 @@ import com.spotmap.spotmapandroid.Commons.GeneralButtonStyle
 import com.spotmap.spotmapandroid.Commons.LargeTitleText
 import com.spotmap.spotmapandroid.Commons.NormalText
 import com.spotmap.spotmapandroid.Commons.SmallNormalText
+import com.spotmap.spotmapandroid.Commons.TitleText
 import com.spotmap.spotmapandroid.Screens.Map.Views.InfiniteCarousel
 import com.spotmap.spotmapandroid.R
 import java.security.acl.Group
@@ -76,8 +77,8 @@ fun SpotDetailsView(spot: Spot) {
                 .fillMaxWidth()
                 .padding(horizontal = 16.dp),
             horizontalAlignment = Alignment.Start) {
-            NormalText(spot.getType().toString().uppercase())
-            LargeTitleText(spot.name)
+            SmallNormalText(spot.getType().toString().uppercase())
+            TitleText(spot.name)
             SmallNormalText("Fake address bla 2 bla bla bla ")
             Spacer(Modifier.height(16.dp))
             if (!spot.description.isEmpty()) {

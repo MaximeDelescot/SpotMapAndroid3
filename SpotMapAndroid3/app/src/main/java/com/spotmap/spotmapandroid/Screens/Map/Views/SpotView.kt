@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -54,6 +55,7 @@ import com.spotmap.spotmapandroid.R
 import com.spotmap.spotmapandroid.Screens.AddSpot.Views.AddGeneralInformationView
 import com.spotmap.spotmapandroid.Screens.AddSpot.Views.AddImagesView
 import com.spotmap.spotmapandroid.Screens.AddSpot.Views.AddLocationView
+import com.spotmap.spotmapandroid.Screens.SpotDetails.Views.IconWithValueView
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
 
@@ -77,6 +79,17 @@ fun SpotView(modifier: Modifier = Modifier,
             Column(modifier = Modifier.fillMaxHeight().weight(1f)) {
                 SmallNormalText(spot.value?.getType().toString().uppercase(), color = colorResource(id= R.color.LightColor))
                 TitleText(spot.value?.name ?: "", color = colorResource(id= R.color.LightColor))
+                Row(modifier = Modifier.weight(1f),
+                    horizontalArrangement = Arrangement.End) {
+                    IconWithValueView(
+                        iconId=R.drawable.ic_follow,
+                        value = 12)
+                    Spacer(modifier = Modifier.width(4.dp))
+                    Spacer(modifier.height(2.dp))
+                    IconWithValueView(
+                        iconId=R.drawable.ic_comment,
+                        value = 12)
+                }
             }
             Spacer(Modifier.width(16.dp))
             Image(
