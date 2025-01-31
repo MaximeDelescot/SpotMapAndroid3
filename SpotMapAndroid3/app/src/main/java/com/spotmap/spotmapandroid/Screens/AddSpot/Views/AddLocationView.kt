@@ -1,4 +1,5 @@
 package com.spotmap.spotmapandroid.Screens.AddSpot.Views
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -21,9 +22,9 @@ fun AddLocationView(modifier: Modifier,
     BasicSpacer()
     CustomTextField(placeholder = "Name", onTextDidChange = {})
     BasicSpacer()
-    GeneralButton("Next", onClick = { nextButtonTapped() })
+    GeneralButton(modifier, "Next", onClick = { nextButtonTapped() })
     BasicSpacer()
-    GeneralButton("Previous", onClick = { previousButtonTapped() }, style = GeneralButtonStyle.SECONDARY)
+    GeneralButton(modifier, "Previous", onClick = { previousButtonTapped() }, style = GeneralButtonStyle.BACKGROUND)
     BasicSpacer()
     CustomPageIndicator(currentIndex = remember { mutableStateOf(currentIndex) },
         indexCount = numberOfPage)

@@ -60,6 +60,7 @@ fun AddGeneralInformationView(modifier: Modifier,
         isChecked = isWaterSelected)
     BasicSpacer()
     GeneralButton(
+        modifier.fillMaxWidth(),
         "Next",
         onClick = { nextButtonTapped() },
         isEnable = buttonIsEnable)

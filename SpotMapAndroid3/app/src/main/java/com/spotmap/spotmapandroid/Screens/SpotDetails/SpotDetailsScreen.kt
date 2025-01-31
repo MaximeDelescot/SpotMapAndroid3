@@ -3,12 +3,14 @@ package com.spotmap.spotmapandroid.Screens.SpotDetails
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -34,10 +36,13 @@ import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.unit.dp
 import com.spotmap.spotmapandroid.Class.Spot
 import com.spotmap.spotmapandroid.Commons.CustomPageIndicator
+import com.spotmap.spotmapandroid.Commons.GeneralButton
+import com.spotmap.spotmapandroid.Commons.GeneralButtonStyle
 import com.spotmap.spotmapandroid.Commons.LargeTitleText
 import com.spotmap.spotmapandroid.Commons.NormalText
 import com.spotmap.spotmapandroid.Commons.SmallNormalText
 import com.spotmap.spotmapandroid.Screens.Map.Views.InfiniteCarousel
+import com.spotmap.spotmapandroid.Screens.SpotDetails.Views.SpotDetailsView
 import java.nio.file.WatchEvent
 
 
@@ -82,38 +87,4 @@ fun SpotDetailsScreen(navController: NavController,
             }
         }
     )
-}
-
-@Composable
-fun SpotDetailsView(spot: Spot) {
-
-    val currentIndex = remember { mutableStateOf(0) }
-
-    Column(horizontalAlignment = Alignment.CenterHorizontally) {
-        InfiniteCarousel(
-            modifier = Modifier
-                .fillMaxSize()
-                .aspectRatio(4 / 3f),
-            scrollTime = 3,
-            scrollEnable = true,
-            imageUrls = remember { mutableStateOf(spot.imageUrls) },
-            currentIndex = currentIndex)
-        CustomPageIndicator(
-            modifier = Modifier.padding(8.dp),
-            currentIndex = currentIndex,
-            indexCount = spot.imageUrls.size)
-
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 16.dp),
-            horizontalAlignment = Alignment.Start) {
-            NormalText(spot.getType().toString().uppercase())
-            LargeTitleText(spot.name)
-            SmallNormalText("Fake address bla 2 bla bla bla ")
-            Spacer(Modifier.height(16.dp))
-            NormalText(spot.description)
-            Spacer(Modifier.height(16.dp))
-        }
-    }
 }

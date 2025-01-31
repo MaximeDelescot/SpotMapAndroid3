@@ -29,22 +29,27 @@ import com.spotmap.spotmapandroid.R
 
 
 enum class GeneralButtonStyle {
-    PRIMARY, SECONDARY
+    PRIMARY, BACKGROUND, SECONDARY
 }
 
 @Composable
-fun GeneralButton(title: String,
+fun GeneralButton(modifier: Modifier = Modifier,
+                  title: String,
                   onClick: () -> Unit,
                   isEnable: Boolean = true,
                   style: GeneralButtonStyle = GeneralButtonStyle.PRIMARY) {
 
-    val modifier = Modifier
-        .fillMaxWidth()
-        .height(40.dp)
-    val containerColor = if (style == GeneralButtonStyle.PRIMARY) { colorResource(id = R.color.PrimaryColor) } else { colorResource(id = R.color.BackgroundColor) }
+    val containerColor = when(style) {
+        GeneralButtonStyle.PRIMARY -> colorResource(id = R.color.PrimaryColor)
+        GeneralButtonStyle.BACKGROUND -> colorResource(id = R.color.BackgroundColor)
+        GeneralButtonStyle.SECONDARY -> colorResource(id = R.color.SecondaryColor)
+    }
+
     val contentColor = colorResource(id = R.color.LightColor)
 
-    Button(modifier = modifier,
+    Button(modifier = modifier
+        .fillMaxWidth()
+        .height(40.dp),
         enabled = isEnable,
         shape = RoundedCornerShape(8.dp),
         colors = ButtonDefaults.buttonColors(

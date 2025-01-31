@@ -51,9 +51,9 @@ fun AddImagesView(modifier: Modifier = Modifier,
     BasicSpacer()
     ImagesSelectorView(imageSelected = imageSelected)
     BasicSpacer()
-    GeneralButton("CREATE THE SPOT", onClick = { creationButtonTapped() })
+    GeneralButton(modifier, "CREATE THE SPOT", onClick = { creationButtonTapped() })
     BasicSpacer()
-    GeneralButton("Previous", onClick = { previousButtonTapped() }, style = GeneralButtonStyle.SECONDARY)
+    GeneralButton(modifier, "Previous", onClick = { previousButtonTapped() }, style = GeneralButtonStyle.BACKGROUND)
     BasicSpacer()
     CustomPageIndicator(currentIndex = remember { mutableStateOf(currentIndex) },
         indexCount = numberOfPage)
