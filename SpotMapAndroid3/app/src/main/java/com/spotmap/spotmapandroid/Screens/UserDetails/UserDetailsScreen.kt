@@ -10,13 +10,15 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavController
+import com.spotmap.spotmapandroid.Screens.SpotDetails.SpotDetailsScreenViewModel
 import com.spotmap.spotmapandroid.Services.APIService
 import com.spotmap.spotmapandroid.Services.UserHandler
 
 @Composable
 fun UserDetailsScreen(navController: NavController,
-                      modifier: Modifier = Modifier) {
-    // Scaffold avec TopAppBar de Material2
+                      modifier: Modifier = Modifier,
+                      viewModel: UserDetailsScreenViewModel) {
+
     Scaffold(
         content = { innerPadding ->
             Column(verticalArrangement = Arrangement.Top,

@@ -34,6 +34,9 @@ class AddSpotScreenViewModel (val userHandler: UserHandler,
     private val _viewToDisplay = MutableLiveData(getViewToDisplay())
     val viewToDisplay: LiveData<AddSpotScreenViewType> = _viewToDisplay
 
+    private val _newSpot = MutableLiveData<Spot?>(null)
+    val newSpot: LiveData<Spot?> = _newSpot
+
     init {
         userHandler.userDidUpdate.observeForever(Observer {
             if (_viewToDisplay.value != AddSpotScreenViewType.LOADING) {
@@ -117,6 +120,7 @@ class AddSpotScreenViewModel (val userHandler: UserHandler,
 
                     apiService.addSpot(newSpot)
                     _viewToDisplay.value = AddSpotScreenViewType.SUCCED
+                    _newSpot.value = newSpot
 
                 } catch (e: Exception) {
                     Log.d("TEST ERROR", "$e")

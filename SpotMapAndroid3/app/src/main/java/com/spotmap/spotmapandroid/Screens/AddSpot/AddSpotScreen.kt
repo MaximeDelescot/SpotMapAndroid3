@@ -35,12 +35,14 @@ import com.spotmap.spotmapandroid.Screens.AddSpot.Views.NoLoggedView
 import kotlinx.coroutines.launch
 import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavController
+import com.spotmap.spotmapandroid.Screens.SpotDetails.SpotDetailsScreenViewModel
 import kotlin.Boolean
 
 @Composable
 fun AddSpotScreen(navController: NavController,
                   modifier: Modifier = Modifier,
-                  viewModel: AddSpotScreenViewModel) {
+                  viewModel: AddSpotScreenViewModel,
+                  spotDetailsScreenViewModel: SpotDetailsScreenViewModel) {
 
     val context = LocalContext.current
 
@@ -50,6 +52,12 @@ fun AddSpotScreen(navController: NavController,
     val pagerState = rememberPagerState(initialPage = currentPage.value, pageCount = { numberOfPages })
 
     val displayedView = viewModel.viewToDisplay.observeAsState(AddSpotScreenViewModel.AddSpotScreenViewType.NOTLOGGED)
+    viewModel.newSpot.observeForever { newSpot ->
+        if (newSpot != null) {
+            spotDetailsScreenViewModel.setSpot(newSpot)
+            navController.navigate("spotDetails")
+        }
+    }
 
     var nameText = remember { mutableStateOf("") }
     var descriptionText = remember { mutableStateOf("") }
@@ -104,7 +112,7 @@ fun AddSpotScreen(navController: NavController,
         when (displayedView.value) {
 
             AddSpotScreenViewModel.AddSpotScreenViewType.SUCCED -> {
-                navController.navigate("spotDetails")
+
             }
             AddSpotScreenViewModel.AddSpotScreenViewType.NOTLOGGED -> {
                 NoLoggedView()
