@@ -74,7 +74,7 @@ fun SpotView(modifier: Modifier = Modifier,
             .background(colorResource(id = R.color.SecondaryColor))
             .clickable { onClick() }) {
 
-        val urls = remember(spot.value) { mutableStateOf(spot.value?.imageUrls ?: listOf()) }
+        val urls = remember(spot.value) { mutableStateOf(spot.value?.smallImageUrls ?: listOf()) }
 
         Row(modifier = modifier.fillMaxSize().padding(16.dp),
             horizontalArrangement = Arrangement.Start,

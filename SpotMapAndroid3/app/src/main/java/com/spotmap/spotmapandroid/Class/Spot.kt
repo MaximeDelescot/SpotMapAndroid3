@@ -25,7 +25,8 @@ class Spot(
     val description: String,
     spotEnum: SpotType,
     val coordinate: Coordinate,
-    var imageUrls: List<String>,
+    var normalImageUrls: List<String>,
+    var smallImageUrls: List<String>,
     var needToPay: Boolean,
     var shelteredFromRain: Boolean,
     var hasFixedHours: Boolean,
@@ -52,11 +53,16 @@ class Spot(
 
     companion object {
         fun create(feed: SpotFeed?): Spot? {
+
+            var smallImageUrls = feed?.smallImageUrls
+            var normalImageUrls = feed?.normalImageUrls
+
             if (feed?.id != null
                 && feed.name != null
                 && feed.creationDate != null
                 && feed.description != null
-                && feed.imageUrls != null
+                && normalImageUrls != null
+                && smallImageUrls != null
                 && feed.type != null
             ) {
                 val creator = SkaterLight.create(feed.creator)
@@ -69,8 +75,9 @@ class Spot(
                         creator = creator,
                         description = feed.description,
                         coordinate = coordinate,
+                        normalImageUrls = normalImageUrls,
+                        smallImageUrls = smallImageUrls,
                         spotEnum = SpotType.valueOf(feed.type),
-                        imageUrls = feed.imageUrls,
                         needToPay = feed.needToPay ?: false,
                         shelteredFromRain = feed.shelteredFromRain ?: false,
                         hasFixedHours = feed.hasFixedHours ?: false,
@@ -93,7 +100,8 @@ class SpotFeed(
     val description: String? = null,
     val type: String? = null,
     val coordinate: Coordinate.CoordinateFeed? = null,
-    val imageUrls: List<String>? = null,
+    var normalImageUrls: List<String>? = null,
+    var smallImageUrls: List<String>? = null,
     var needToPay: Boolean? = null,
     var shelteredFromRain: Boolean? = null,
     var hasFixedHours: Boolean? = null,

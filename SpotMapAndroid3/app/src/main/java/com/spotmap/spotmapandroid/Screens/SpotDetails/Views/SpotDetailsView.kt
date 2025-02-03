@@ -45,7 +45,7 @@ fun SpotDetailsView(spot: Spot) {
                 .aspectRatio(4 / 3f),
             scrollTime = 3,
             scrollEnable = true,
-            imageUrls = remember { mutableStateOf(spot.imageUrls) },
+            imageUrls = remember { mutableStateOf(spot.normalImageUrls) },
             currentIndex = currentIndex)
 
         Row(modifier = Modifier
@@ -59,7 +59,7 @@ fun SpotDetailsView(spot: Spot) {
             CustomPageIndicator(
                 modifier = Modifier.weight(2f),
                 currentIndex = currentIndex,
-                indexCount = spot.imageUrls.size)
+                indexCount = spot.normalImageUrls.size)
 
             Row(modifier = Modifier.weight(1f),
                 horizontalArrangement = Arrangement.End) {

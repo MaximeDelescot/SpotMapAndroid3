@@ -11,6 +11,7 @@ import com.spotmap.spotmapandroid.Class.Coordinate
 import com.spotmap.spotmapandroid.Class.Spot
 import com.spotmap.spotmapandroid.Class.SpotType
 import com.spotmap.spotmapandroid.Services.APIService
+import com.spotmap.spotmapandroid.Services.CompressionType
 import com.spotmap.spotmapandroid.Services.StorageService
 import com.spotmap.spotmapandroid.Services.UserHandler
 import kotlinx.coroutines.Dispatchers
@@ -75,7 +76,8 @@ class AddSpotScreenViewModel (val userHandler: UserHandler,
                     description = description,
                     spotEnum = type,
                     coordinate = Coordinate(fakeLati, fakeLong),
-                    imageUrls = listOf(),
+                    normalImageUrls = listOf(),
+                    smallImageUrls = listOf(),
                     needToPay = needToPay,
                     shelteredFromRain = shelteredFromRain,
                     hasFixedHours = hasFixedHours,
@@ -84,19 +86,34 @@ class AddSpotScreenViewModel (val userHandler: UserHandler,
 
                 try {
 
-                    val urls: MutableList<String> = mutableListOf()
-
+                    val smallUrls: MutableList<String> = mutableListOf()
+                    val normalUrls: MutableList<String> = mutableListOf()
                     coroutineScope {
-                        val deferredResults = selectedImage.map { image ->
+                        val deferredNormalResults = selectedImage.map { image ->
                             async {
-                                val downloadUrl = storageService.save(image, newSpot)
-                                downloadUrl
+                                val normalUrl = storageService.save(
+                                    imageView = image,
+                                    spot = newSpot,
+                                    compressionType = CompressionType.normal())
+                                normalUrl
                             }
                         }
-                        urls.addAll(deferredResults.awaitAll().filterNotNull())
-                    }
 
-                    newSpot.imageUrls = urls
+                        val deferredSmallResults = selectedImage.map { image ->
+                            async {
+                                val smallUrl = storageService.save(
+                                    imageView = image,
+                                    spot = newSpot,
+                                    compressionType = CompressionType.verySmall())
+                                smallUrl
+                            }
+                        }
+
+                        normalUrls.addAll(deferredNormalResults.awaitAll())
+                        smallUrls.addAll(deferredSmallResults.awaitAll())
+                    }
+                    newSpot.smallImageUrls = smallUrls
+                    newSpot.normalImageUrls = normalUrls
 
                     apiService.addSpot(newSpot)
                     _viewToDisplay.value = AddSpotScreenViewType.SUCCED
