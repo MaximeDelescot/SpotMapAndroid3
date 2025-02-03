@@ -9,8 +9,10 @@ import android.widget.ImageView
 import com.google.firebase.Firebase
 import com.google.firebase.storage.storage
 import com.spotmap.spotmapandroid.Class.Spot
+import com.spotmap.spotmapandroid.Services.ContinentDetectionService.Companion.getNearestContinent
 import kotlinx.coroutines.tasks.await
 import java.io.ByteArrayOutputStream
+import java.net.URL
 import java.util.UUID
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
@@ -41,12 +43,20 @@ class CompressionType(val maxWidth: Int, val compression: Int, val nameSuffix: S
                 nameSuffix = "")
         }
     }
-
-    }
+}
 
 class StorageService() {
 
     val storage = Firebase.storage
+
+    companion object {
+        val storageUrls: Map<ClosestContinent, String> = mapOf(
+            ClosestContinent.AMERICA to "spotmapapi.firebasestorage.app",
+            ClosestContinent.ASIA to "spotmapapiasia",
+            ClosestContinent.EUROPE to "spotmapapieurope",
+            ClosestContinent.UNKNOWN to "spotmapapi.firebasestorage.app"
+        )
+    }
 
     interface UploadCallback {
         fun onSuccess(downloadUrl: String)

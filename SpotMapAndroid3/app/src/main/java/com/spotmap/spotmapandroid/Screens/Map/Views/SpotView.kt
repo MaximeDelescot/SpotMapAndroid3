@@ -53,6 +53,7 @@ import com.spotmap.spotmapandroid.Commons.CustomPageIndicator
 import com.spotmap.spotmapandroid.Commons.LargeTitleText
 import com.spotmap.spotmapandroid.Commons.SmallNormalText
 import com.spotmap.spotmapandroid.Commons.TitleText
+import com.spotmap.spotmapandroid.Commons.Utils.convertToFastestUrl
 import com.spotmap.spotmapandroid.Commons.VerySmallNormalText
 import com.spotmap.spotmapandroid.R
 import com.spotmap.spotmapandroid.Screens.AddSpot.Views.AddGeneralInformationView
@@ -61,6 +62,7 @@ import com.spotmap.spotmapandroid.Screens.AddSpot.Views.AddLocationView
 import com.spotmap.spotmapandroid.Screens.SpotDetails.Views.IconWithValueView
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
+import kotlin.math.log
 
 @Composable
 fun SpotView(modifier: Modifier = Modifier,
@@ -194,7 +196,7 @@ fun InfiniteCarousel(
                 AsyncImage(
                     contentScale = ContentScale.Crop,
                     modifier = Modifier.fillMaxSize(),
-                    model = imageUrls.value[page % imageUrls.value.size],
+                    model = imageUrls.value[page % imageUrls.value.size].convertToFastestUrl(),
                     contentDescription = null
                 )
             }
