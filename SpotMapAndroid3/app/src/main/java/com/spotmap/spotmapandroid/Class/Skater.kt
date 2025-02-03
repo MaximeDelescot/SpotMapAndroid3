@@ -6,6 +6,7 @@ import java.util.Date
 class Skater(val id: String,
              val userName: String,
              val email: String,
+             val photoUrl: String?,
              val creationDate: Date = Date(System.currentTimeMillis())) {
 
     companion object {
@@ -13,9 +14,14 @@ class Skater(val id: String,
 
             val name = user.displayName
             val email = user.email
+            val photoUrl = if(user.photoUrl != null) { user.photoUrl.toString() } else { null }
 
-            if (name != null && email != null) {
-                return Skater(user.uid, name, email)
+            if (name != null
+                && email != null) {
+                return Skater(id = user.uid,
+                    userName = name,
+                    email = email,
+                    photoUrl = photoUrl)
             }
             return null
         }
