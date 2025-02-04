@@ -28,8 +28,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
-import androidx.compose.ui.graphics.painter.Painter
-import androidx.compose.ui.graphics.vector.Group
+import androidx.compose.ui.graphics.painter.Painter import androidx.compose.ui.graphics.vector.Group
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
@@ -50,12 +49,17 @@ import com.spotmap.spotmapandroid.Commons.VerySmallNormalText
 import com.spotmap.spotmapandroid.R
 
 @Composable
-fun UserDetailsView(user: Skater) {
+fun UserDetailsView(user: Skater, editClick: () -> Unit) {
     Column(modifier = Modifier.padding(16.dp)) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.Start)    {
-            UserImageView(modifier = Modifier, url = user.photoUrl, height = 80.dp)
+            UserImageView(
+                modifier = Modifier,
+                url = user.photoUrl,
+                height = 80.dp,
+                displayButton = true,
+                onClick = editClick)
             Spacer(modifier = Modifier.width(16.dp))
             Column(modifier = Modifier.weight(1f)) {
                 Row(verticalAlignment = Alignment.CenterVertically) {
@@ -110,13 +114,12 @@ fun UserCountView(modifier: Modifier, count: Int, title: String) {
 }
 
 @Composable
-fun UserImageView(modifier: Modifier, url: String?, height: Dp) {
+fun UserImageView(modifier: Modifier, url: String?, height: Dp, displayButton: Boolean = false, onClick: () -> Unit) {
     Box(
         modifier = modifier
             .size(height)
             .clip(CircleShape)
     ) {
-        // Image de l'utilisateur
         AsyncImage(
             contentScale = ContentScale.Crop,
             modifier = modifier
@@ -126,19 +129,18 @@ fun UserImageView(modifier: Modifier, url: String?, height: Dp) {
             placeholder = painterResource(id = R.drawable.placeholder_user),
             contentDescription = null
         )
-
-        Text(
-            text = "Edit",
-            textAlign = TextAlign.Center,
-            color = colorResource(id = R.color.LightColor),
-            modifier =  Modifier
-                .fillMaxWidth()
-                .clickable(onClick = {
-                    Log.d("EDIT CLICKED", "YOOOO")
-                })
-                .align(Alignment.BottomCenter)
-                .background(colorResource(id = R.color.PrimaryColor))
-                .padding(2.dp)
-        )
+        if (displayButton == true) {
+            Text(
+                text = "Edit",
+                textAlign = TextAlign.Center,
+                color = colorResource(id = R.color.LightColor),
+                modifier =  Modifier
+                    .fillMaxWidth()
+                    .clickable(onClick = onClick)
+                    .align(Alignment.BottomCenter)
+                    .background(colorResource(id = R.color.PrimaryColor))
+                    .padding(2.dp)
+            )
+        }
     }
 }

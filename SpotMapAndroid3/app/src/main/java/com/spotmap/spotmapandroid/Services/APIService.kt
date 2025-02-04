@@ -13,6 +13,7 @@ import com.spotmap.spotmapandroid.Class.SpotRef
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
+import kotlin.coroutines.suspendCoroutine
 
 class APIService(val db: FirebaseFirestore = Firebase.firestore) {
 
@@ -73,4 +74,16 @@ class APIService(val db: FirebaseFirestore = Firebase.firestore) {
         }
     }
 
+    suspend fun updateSkater(skaterId: String, url: String) {
+        suspendCoroutine<Unit> { continuation ->
+            db.collection("skaters").document(skaterId)
+                .update(mapOf("photoUrl" to url))
+                .addOnSuccessListener {
+                    continuation.resume(Unit)
+                }
+                .addOnFailureListener { e ->
+                    continuation.resumeWithException(e)
+                }
+        }
+    }
 }

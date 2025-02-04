@@ -1,6 +1,10 @@
 package com.spotmap.spotmapandroid.Screens.UserDetails
 
 import android.util.Log
+import android.widget.ImageView
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.PickVisualMediaRequest
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -18,6 +22,7 @@ import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
@@ -35,8 +40,20 @@ fun UserDetailsScreen(navController: NavController,
                       modifier: Modifier = Modifier,
                       viewModel: UserDetailsScreenViewModel) {
 
+    val context = LocalContext.current
+
     val items = viewModel.items.observeAsState(listOf())
     val user = viewModel.user.observeAsState(null)
+
+    val launcher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.PickVisualMedia()
+    ) { uri ->
+        if (uri != null) {
+            val imageView = ImageView(context)
+            imageView.setImageURI(uri)
+            viewModel.saveUserImage(imageView = imageView)
+        }
+    }
 
     Scaffold(
         content = { innerPadding ->
@@ -47,7 +64,11 @@ fun UserDetailsScreen(navController: NavController,
                 items(items.value) { item ->
                     when (item) {
                         UserDetailsItem.USERDETAILS ->
-                            user.value?.let { UserDetailsView(user = it) }
+                            user.value?.let { UserDetailsView(
+                                user = it,
+                                editClick = {
+                                    launcher.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
+                                }) }
                     }
                 }
             }

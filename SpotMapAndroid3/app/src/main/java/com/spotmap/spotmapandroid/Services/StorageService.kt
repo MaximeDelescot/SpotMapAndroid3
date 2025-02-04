@@ -4,10 +4,12 @@ import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.Rect
 import android.graphics.drawable.BitmapDrawable
+import android.media.Image
 import android.util.Log
 import android.widget.ImageView
 import com.google.firebase.Firebase
 import com.google.firebase.storage.storage
+import com.spotmap.spotmapandroid.Class.SkaterLight
 import com.spotmap.spotmapandroid.Class.Spot
 import com.spotmap.spotmapandroid.Services.ContinentDetectionService.Companion.getNearestContinent
 import kotlinx.coroutines.tasks.await
@@ -63,6 +65,17 @@ class StorageService() {
         fun onFailure()
     }
 
+    fun getData(imageView: ImageView, compressionType: CompressionType):  ByteArray {
+        val imageResized = resizeImageIfNeeded(
+            imageView = imageView,
+            maxDimension = compressionType.maxWidth)
+
+        val bitmap = (imageView.drawable as BitmapDrawable).bitmap
+        val baos = ByteArrayOutputStream()
+        bitmap.compress(Bitmap.CompressFormat.JPEG, compressionType.compression, baos)
+        return baos.toByteArray()
+    }
+
     suspend fun save(imageView: ImageView, spot: Spot, compressionType: CompressionType): String {
         return suspendCoroutine { continuation ->
 
@@ -70,14 +83,31 @@ class StorageService() {
             val id = UUID.randomUUID().toString()
             val spaceRef = storageRef.child("Spots/${spot.id}/${id}${compressionType.nameSuffix}.jpg")
 
-            val imageResized = resizeImageIfNeeded(
+            val data = getData(
                 imageView = imageView,
-                maxDimension = compressionType.maxWidth)
+                compressionType = compressionType)
 
-            val bitmap = (imageView.drawable as BitmapDrawable).bitmap
-            val baos = ByteArrayOutputStream()
-            bitmap.compress(Bitmap.CompressFormat.JPEG, compressionType.compression, baos)
-            val data = baos.toByteArray()
+            val uploadTask = spaceRef.putBytes(data)
+
+            uploadTask.addOnFailureListener {
+                continuation.resumeWithException(Throwable("Failed to upload image"))
+            }.addOnSuccessListener { taskSnapshot ->
+                taskSnapshot.storage.downloadUrl.addOnSuccessListener { uri ->
+                    continuation.resume(uri.toString())
+                }
+            }
+        }
+    }
+
+    suspend fun save(imageView: ImageView, user: SkaterLight): String {
+        return suspendCoroutine { continuation ->
+
+            val storageRef = storage.reference
+            val spaceRef = storageRef.child("Users/${user.id}.jpg")
+
+            val data = getData(
+                imageView = imageView,
+                compressionType = CompressionType.userImage())
 
             val uploadTask = spaceRef.putBytes(data)
 
