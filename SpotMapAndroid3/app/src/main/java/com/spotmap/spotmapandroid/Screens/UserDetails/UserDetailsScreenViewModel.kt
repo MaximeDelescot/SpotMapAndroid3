@@ -18,7 +18,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 enum class UserDetailsItem {
-    USERDETAILS
+    USERDETAILS, LOADING
 }
 
 class UserDetailsScreenViewModel(val userHandler: UserHandler, val storageService: StorageService, val apiService: APIService): ViewModel() {
@@ -33,6 +33,7 @@ class UserDetailsScreenViewModel(val userHandler: UserHandler, val storageServic
 
         val user = userHandler.getUserLight()
         if (user != null) {
+            _items.value = listOf(UserDetailsItem.LOADING)
             CoroutineScope(Dispatchers.IO).launch {
                 try {
                     val url = storageService.save(
@@ -43,6 +44,8 @@ class UserDetailsScreenViewModel(val userHandler: UserHandler, val storageServic
                     userHandler.updateUserImage(url)
                     withContext(Dispatchers.Main) {
                         _user.value = userHandler.getUser()
+                        _items.value = listOf(UserDetailsItem.USERDETAILS)
+
                     }
 
                 } catch (e: Exception) {

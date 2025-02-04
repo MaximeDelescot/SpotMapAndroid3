@@ -15,6 +15,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Button
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -69,6 +70,12 @@ fun UserDetailsScreen(navController: NavController,
                                 editClick = {
                                     launcher.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
                                 }) }
+                        UserDetailsItem.LOADING ->
+                            Row(modifier = modifier.fillMaxWidth().padding(16.dp),
+                                horizontalArrangement = Arrangement.Center) {
+                                CircularProgressIndicator(color = colorResource(id= R.color.PrimaryColor))
+
+                            }
                     }
                 }
             }
