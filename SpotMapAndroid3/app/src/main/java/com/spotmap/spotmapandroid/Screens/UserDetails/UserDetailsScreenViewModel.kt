@@ -1,5 +1,6 @@
 package com.spotmap.spotmapandroid.Screens.UserDetails
 
+import android.net.Uri
 import android.util.Log
 import android.widget.ImageView
 import androidx.lifecycle.LiveData
@@ -28,25 +29,20 @@ class UserDetailsScreenViewModel(val userHandler: UserHandler, val storageServic
     private val _user = MutableLiveData<Skater?>(userHandler.getUser())
     val user: LiveData<Skater?> = _user
 
-
     fun saveUserImage(imageView: ImageView) {
 
         val user = userHandler.getUserLight()
         if (user != null) {
             CoroutineScope(Dispatchers.IO).launch {
                 try {
-
                     val url = storageService.save(
                         imageView = imageView,
                         user = user
                     )
 
-                    apiService.updateSkater(
-                        skaterId = user.id,
-                        url = url)
-
+                    userHandler.updateUserImage(url)
                     withContext(Dispatchers.Main) {
-                        Log.d("Success", "Image saved at: $url")
+                        _user.value = userHandler.getUser()
                     }
 
                 } catch (e: Exception) {
@@ -54,7 +50,6 @@ class UserDetailsScreenViewModel(val userHandler: UserHandler, val storageServic
                 }
             }
         }
-
     }
 }
 

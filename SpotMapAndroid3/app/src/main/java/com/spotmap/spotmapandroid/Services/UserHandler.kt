@@ -1,15 +1,18 @@
 package com.spotmap.spotmapandroid.Services
 
+import android.net.Uri
 import androidx.compose.runtime.remember
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.UserProfileChangeRequest
+import com.google.firebase.auth.userProfileChangeRequest
 import com.spotmap.spotmapandroid.Class.Skater
 import com.spotmap.spotmapandroid.Class.SkaterLight
 import com.spotmap.spotmapandroid.Screens.Account.AccountScreenViewModel.DisplayedView
 import kotlinx.coroutines.suspendCancellableCoroutine
+import kotlinx.coroutines.tasks.await
 import kotlin.coroutines.resumeWithException
 
 class UserHandler(val apiService: APIService) {
@@ -30,7 +33,7 @@ class UserHandler(val apiService: APIService) {
     fun getUser(): Skater? {
         val user = auth.currentUser
         if (user != null) {
-            return  Skater.create(user)
+            return Skater.create(user)
         } else {
             return null
         }
@@ -39,7 +42,7 @@ class UserHandler(val apiService: APIService) {
     fun getUserLight(): SkaterLight? {
         val user = auth.currentUser
         if (user != null) {
-            return  SkaterLight.create(user)
+            return SkaterLight.create(user)
         } else {
             return null
         }
@@ -68,15 +71,22 @@ class UserHandler(val apiService: APIService) {
         try {
             setUserProfile(user, userName)
             val skater = Skater.create(user)
-            if (skater != null) { apiService.createSkater(skater) }
-            else { throw Exception("Failed to save skater in database")  }
+            if (skater != null) {
+                apiService.createSkater(skater)
+            } else {
+                throw Exception("Failed to save skater in database")
+            }
         } catch (e: Exception) {
             deleteUser(user)
             throw e
         }
     }
 
-    private suspend fun createUser(auth: FirebaseAuth, email: String, password: String): FirebaseUser {
+    private suspend fun createUser(
+        auth: FirebaseAuth,
+        email: String,
+        password: String
+    ): FirebaseUser {
         return suspendCancellableCoroutine { continuation ->
             auth.createUserWithEmailAndPassword(email, password)
                 .addOnCompleteListener { task ->
@@ -84,7 +94,9 @@ class UserHandler(val apiService: APIService) {
                     if (task.isSuccessful && user != null) {
                         continuation.resume(user, onCancellation = null)
                     } else {
-                        continuation.resumeWithException(task.exception ?: Exception("Unknown error"))
+                        continuation.resumeWithException(
+                            task.exception ?: Exception("Unknown error")
+                        )
                     }
                 }
         }
@@ -101,7 +113,9 @@ class UserHandler(val apiService: APIService) {
                     if (task.isSuccessful) {
                         continuation.resume(Unit, onCancellation = null)
                     } else {
-                        continuation.resumeWithException(task.exception ?: Exception("Failed to update profile"))
+                        continuation.resumeWithException(
+                            task.exception ?: Exception("Failed to update profile")
+                        )
                     }
                 }
         }
@@ -114,9 +128,29 @@ class UserHandler(val apiService: APIService) {
                     if (task.isSuccessful) {
                         continuation.resume(Unit, onCancellation = null)
                     } else {
-                        continuation.resumeWithException(task.exception ?: Exception("Failed to delete user"))
+                        continuation.resumeWithException(
+                            task.exception ?: Exception("Failed to delete user")
+                        )
                     }
                 }
+        }
+    }
+
+    suspend fun updateUserImage(url: String) {
+        val id = getUserLight()?.id ?: return
+
+        val user = FirebaseAuth.getInstance().currentUser
+        val changeRequest = user?.updateProfile(
+            userProfileChangeRequest {
+                photoUri = Uri.parse(url)
+            }
+        )
+
+        try {
+            changeRequest?.await()
+            apiService.updateSkater(id, url)
+        } catch (e: Exception) {
+            throw e
         }
     }
 }
