@@ -97,13 +97,15 @@ fun SpotView(modifier: Modifier = Modifier,
                             color = colorResource(id = R.color.LightColor)
                         )
                         Row(horizontalArrangement = Arrangement.End) {
-                            IconWithValueView(iconId = R.drawable.ic_follow, value = 12)
-                            Spacer(modifier = Modifier.width(4.dp))
-                            Spacer(modifier = Modifier.height(2.dp))
                             IconWithValueView(
-                                iconId = R.drawable.ic_comment,
-                                value = 12
-                            )
+                                iconId = R.drawable.ic_follow,
+                                value = 12)
+                            if ((spot.value?.commentCount ?: 0 ) > 0) {
+                                Spacer(modifier = Modifier.width(8.dp))
+                                IconWithValueView(
+                                    iconId=R.drawable.ic_comment,
+                                    value = (spot.value?.commentCount ?: 0 ))
+                            }
                         }
                         Spacer(modifier = Modifier.weight(1f))
                     }

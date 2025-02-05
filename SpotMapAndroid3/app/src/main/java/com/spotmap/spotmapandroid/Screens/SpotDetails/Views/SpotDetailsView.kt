@@ -66,10 +66,13 @@ fun SpotDetailsView(spot: Spot) {
                 IconWithValueView(
                     iconId=R.drawable.ic_follow,
                     value = 12)
-                Spacer(modifier = Modifier.width(4.dp))
-                IconWithValueView(
-                    iconId=R.drawable.ic_comment,
-                    value = 12)
+
+                if (spot.commentCount > 0) {
+                    Spacer(modifier = Modifier.width(8.dp))
+                    IconWithValueView(
+                        iconId=R.drawable.ic_comment,
+                        value = spot.commentCount)
+                }
             }
         }
 
