@@ -7,6 +7,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.spotmap.spotmapandroid.Class.Skater
+import com.spotmap.spotmapandroid.Commons.Utils.removeTokenParam
 import com.spotmap.spotmapandroid.Services.APIService
 import com.spotmap.spotmapandroid.Services.CompressionType
 import com.spotmap.spotmapandroid.Services.StorageService
@@ -39,13 +40,11 @@ class UserDetailsScreenViewModel(val userHandler: UserHandler, val storageServic
                     val url = storageService.save(
                         imageView = imageView,
                         user = user
-                    )
-
+                    ).removeTokenParam()
                     userHandler.updateUserImage(url)
                     withContext(Dispatchers.Main) {
                         _user.value = userHandler.getUser()
                         _items.value = listOf(UserDetailsItem.USERDETAILS)
-
                     }
 
                 } catch (e: Exception) {

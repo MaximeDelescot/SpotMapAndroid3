@@ -17,3 +17,29 @@ fun String.convertToFastestUrl(): String {
         this
     }
 }
+
+
+fun String.removeTokenParam(): String {
+    return this.removeParameter("token")
+}
+
+private fun String.removeParameter(parameterName: String): String {
+    val urlParts = this.split("?")
+
+    if (urlParts.size > 1) {
+        val baseUrl = urlParts[0]
+        val query = urlParts[1]
+
+        val newQuery = query.split("&")
+            .filter { it.split("=")[0] != parameterName }
+            .joinToString("&")
+
+        return if (newQuery.isNotEmpty()) {
+            "$baseUrl?$newQuery"
+        } else {
+            baseUrl
+        }
+    }
+
+    return this
+}
