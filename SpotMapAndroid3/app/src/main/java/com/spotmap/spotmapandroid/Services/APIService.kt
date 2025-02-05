@@ -4,13 +4,17 @@ import android.util.Log
 import androidx.compose.runtime.rememberUpdatedState
 import com.google.firebase.Firebase
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.firestore
 import com.google.firebase.firestore.toObjects
+import com.spotmap.spotmapandroid.Class.Comment
+import com.spotmap.spotmapandroid.Class.CommentFeed
 import com.spotmap.spotmapandroid.Class.Skater
 import com.spotmap.spotmapandroid.Class.Spot
 import com.spotmap.spotmapandroid.Class.SpotFeed
 import com.spotmap.spotmapandroid.Class.SpotRef
 import kotlinx.coroutines.suspendCancellableCoroutine
+import kotlinx.coroutines.tasks.await
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
 import kotlin.coroutines.suspendCoroutine
@@ -85,5 +89,31 @@ class APIService(val db: FirebaseFirestore = Firebase.firestore) {
                     continuation.resumeWithException(e)
                 }
         }
+    }
+
+    suspend fun getComments(spot: Spot, numberMax: Int? = null): List<Comment> = suspendCancellableCoroutine { continuation ->
+        val commentsRef = FirebaseFirestore.getInstance()
+            .collection("spots")
+            .document(spot.id)
+            .collection("comments")
+
+        var query = commentsRef
+            .orderBy("creationDate", Query.Direction.DESCENDING)
+
+        numberMax?.let {
+            query = query.limit(it.toLong())
+        }
+
+        val snapshot = query.get().addOnSuccessListener { result ->
+            try {
+                val comments = result.toObjects<CommentFeed>().mapNotNull { Comment.create(it) }
+                continuation.resume(comments)
+            } catch (e: Exception) {
+                continuation.resumeWithException(e)
+            }
+        }
+            .addOnFailureListener { exception ->
+                continuation.resumeWithException(exception)
+            }
     }
 }
