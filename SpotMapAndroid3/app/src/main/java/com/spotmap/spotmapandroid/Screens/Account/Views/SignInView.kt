@@ -34,14 +34,14 @@ fun SignInView(forgotPasswordButtonTapped: () -> Unit,
 
     Column(verticalArrangement = Arrangement.Center) {
 
-        CustomTextField("Email",
-            emailTextFieldState,
-            { checkForButtonStatus() }
+        CustomTextField(placeholder = "Email",
+            textState = emailTextFieldState,
+            onTextDidChange = { checkForButtonStatus() }
         )
         BasicSpacer()
-        CustomTextField("Password",
-            passwordTextFieldState,
-            { checkForButtonStatus() },
+        CustomTextField(placeholder = "Password",
+            textState = passwordTextFieldState,
+            onTextDidChange ={ checkForButtonStatus() },
             isPassword = true
         )
         BasicSpacer()

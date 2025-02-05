@@ -41,17 +41,18 @@ fun NormalText(text: String, color: Color = colorResource(id = R.color.LightColo
         color = color,
         fontWeight = FontWeight.Normal,
         maxLines = maxLine,
-        fontSize = 18.sp)
+        fontSize = 15.sp)
 }
 
 @Composable
-fun TitleText(text: String, color: Color = colorResource(id = R.color.LightColor), maxLine: Int = Int.MAX_VALUE, textAlign: TextAlign? = null) {
+fun TitleText(modifier: Modifier = Modifier, text: String, color: Color = colorResource(id = R.color.LightColor), maxLine: Int = Int.MAX_VALUE, textAlign: TextAlign? = null) {
     Text(text,
+        modifier = modifier,
         textAlign = textAlign,
         color = color,
         fontWeight = FontWeight.Bold,
         maxLines = maxLine,
-        fontSize = 18.sp)
+        fontSize = 15.sp)
 }
 
 @Composable

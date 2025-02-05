@@ -34,23 +34,23 @@ fun SignUpView(tryToSignUp: (email: String, password: String, username: String) 
         }
 
         CustomTextField(
-            "Username",
+            placeholder = "Username",
             textState = usernameTextFieldState,
             onTextDidChange = { checkForButtonStatus() })
         BasicSpacer()
         CustomTextField(
-            "Email",
+            placeholder = "Email",
             textState = emailTextFieldState,
             onTextDidChange = { checkForButtonStatus() })
         BasicSpacer()
         CustomTextField(
-            "Password",
+            placeholder = "Password",
             textState = passwordTextFieldState,
             onTextDidChange = { checkForButtonStatus() },
             isPassword = true)
         BasicSpacer()
         CustomTextField(
-            "Confirm password",
+            placeholder = "Confirm password",
             textState = passwordConfirmationTextFieldState,
             onTextDidChange = { checkForButtonStatus() },
             isPassword = true)

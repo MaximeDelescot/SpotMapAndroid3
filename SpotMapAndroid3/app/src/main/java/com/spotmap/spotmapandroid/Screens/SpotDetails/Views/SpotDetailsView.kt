@@ -34,11 +34,13 @@ import java.security.acl.Group
 
 
 @Composable
-fun SpotDetailsView(spot: Spot) {
+fun SpotDetailsView(modifier: Modifier = Modifier, spot: Spot) {
 
     val currentIndex = remember { mutableStateOf(0) }
 
-    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+    Column(
+        modifier = modifier,
+        horizontalAlignment = Alignment.CenterHorizontally) {
         InfiniteCarousel(
             modifier = Modifier
                 .fillMaxSize()
@@ -91,7 +93,7 @@ fun SpotDetailsView(spot: Spot) {
                     overflow = TextOverflow.Ellipsis
                 )
             }
-            TitleText(spot.name)
+            TitleText(text = spot.name)
             SmallNormalText("Fake address bla 2 bla bla bla ")
             Spacer(Modifier.height(16.dp))
             if (!spot.description.isEmpty()) {

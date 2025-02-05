@@ -18,7 +18,7 @@ fun AddLocationView(modifier: Modifier,
                     nextButtonTapped: ()->Unit,
                     previousButtonTapped: ()->Unit) {
 
-    TitleText("Choose accurate location (2/3)")
+    TitleText(text = "Choose accurate location (2/3)")
     BasicSpacer()
     CustomTextField(placeholder = "Name", onTextDidChange = {})
     BasicSpacer()

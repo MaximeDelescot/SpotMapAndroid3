@@ -97,7 +97,7 @@ class Spot(
 class SpotFeed(
     val id: String? = null,
     val creationDate: Date? = null,
-    val creator: SkaterLight.SkaterLightFeed? = null,
+    val creator: SkaterLightFeed? = null,
     val name: String? = null,
     val description: String? = null,
     val type: String? = null,

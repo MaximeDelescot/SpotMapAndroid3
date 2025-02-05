@@ -3,6 +3,8 @@ package com.spotmap.spotmapandroid.Commons
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -14,8 +16,10 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.graphics.vector.PathBuilder
 import androidx.compose.ui.res.colorResource
@@ -89,6 +93,13 @@ fun IconBorderButton(
             modifier = modifier.padding(8.dp)
         )
     }
+}
+
+@Composable
+fun NormalButton(title: String, onClick: () -> Unit) {
+    TitleText(modifier = Modifier.clickable(onClick = onClick),
+        text = title,
+        color = colorResource(id = R.color.PrimaryColor))
 }
 
 @Preview

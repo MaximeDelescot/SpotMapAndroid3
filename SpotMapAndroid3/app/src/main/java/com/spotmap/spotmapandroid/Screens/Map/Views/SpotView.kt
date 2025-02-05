@@ -92,7 +92,7 @@ fun SpotView(modifier: Modifier = Modifier,
                             color = colorResource(id = R.color.LightColor)
                         )
                         TitleText(
-                            spot.value?.name ?: "",
+                            text = spot.value?.name ?: "",
                             maxLine = 2,
                             color = colorResource(id = R.color.LightColor)
                         )

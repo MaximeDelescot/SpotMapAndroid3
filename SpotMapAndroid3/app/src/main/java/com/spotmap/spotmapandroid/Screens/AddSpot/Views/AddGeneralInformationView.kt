@@ -31,7 +31,7 @@ fun AddGeneralInformationView(modifier: Modifier,
 
     var buttonIsEnable = if(nameText.value.isEmpty()) { false } else { true }
 
-    TitleText("Add general informations (1/3)")
+    TitleText(text = "Add general informations (1/3)")
     BasicSpacer()
     CustomTextField(
         placeholder = "Name",

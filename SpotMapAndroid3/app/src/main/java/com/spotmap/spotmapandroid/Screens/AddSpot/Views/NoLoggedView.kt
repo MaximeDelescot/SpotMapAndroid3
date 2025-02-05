@@ -38,7 +38,7 @@ fun NoLoggedView() {
                 colorFilter = ColorFilter.tint(colorResource(id= R.color.LightColor))
             )
             BasicSpacer()
-            TitleText("You need to be logged to create a new spot.", textAlign = TextAlign.Center)
+            TitleText(text = "You need to be logged to create a new spot.", textAlign = TextAlign.Center)
             Spacer(modifier= Modifier.height(4.dp))
             NormalText("You can create an account for free in the Account tab.", textAlign = TextAlign.Center, color = colorResource(id=R.color.LightDarker1Color ))
         }

@@ -63,8 +63,9 @@ fun UserDetailsView(user: Skater, editClick: () -> Unit) {
             Spacer(modifier = Modifier.width(16.dp))
             Column(modifier = Modifier.weight(1f)) {
                 Row(verticalAlignment = Alignment.CenterVertically) {
-                    TitleText(user.userName,
-                        color = colorResource(id = R.color.LightColor))
+                    TitleText(
+                            text = user.userName,
+                            color = colorResource(id = R.color.LightColor))
                     Spacer(modifier = Modifier.weight(1f))
                     IconButton(onClick = {
 
@@ -107,7 +108,7 @@ fun UserCountView(modifier: Modifier, count: Int, title: String) {
     Column(
         modifier = modifier,
         horizontalAlignment = Alignment.Start) {
-        TitleText(count.toString())
+        TitleText(text = count.toString())
         VerySmallNormalText(text = title,
             color = colorResource(id = R.color.LightDarker1Color))
     }

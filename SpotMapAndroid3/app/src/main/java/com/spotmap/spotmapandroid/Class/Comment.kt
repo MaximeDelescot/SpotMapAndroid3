@@ -33,6 +33,6 @@ class Comment(val id: String = UUID.randomUUID().toString(),
 
 class CommentFeed(val id: String? = null,
                   val content: String? = null,
-                  val creator: SkaterLight.SkaterLightFeed? = null,
+                  val creator: SkaterLightFeed? = null,
                   val creationDate: Date? = null) {
 }

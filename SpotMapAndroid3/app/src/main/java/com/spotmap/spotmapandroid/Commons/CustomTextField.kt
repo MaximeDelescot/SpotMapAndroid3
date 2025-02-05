@@ -27,13 +27,15 @@ import androidx.compose.foundation.layout.Box
 
 @Composable
 fun CustomTextField(
+    modifier: Modifier = Modifier,
     placeholder: String,
     textState: MutableState<String> = remember { mutableStateOf("") },
     onTextDidChange: () -> Unit,
+    backgroundColorId: Int = R.color.BackgroundColor,
     isPassword: Boolean = false
 ) {
-    val modifier = Modifier.fillMaxWidth().height(40.dp).padding(0.dp, 0.dp)
-        .background(color = colorResource(id = R.color.BackgroundColor), shape = RoundedCornerShape(8.dp))
+    val modifier = modifier.fillMaxWidth().height(40.dp).padding(0.dp, 0.dp)
+        .background(color = colorResource(id = backgroundColorId), shape = RoundedCornerShape(8.dp))
 
     val textColor = colorResource(id = R.color.LightColor)
     val placeholderColor = colorResource(id = R.color.LightDarker2Color)

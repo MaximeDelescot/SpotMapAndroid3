@@ -5,69 +5,39 @@ import android.os.Parcelable
 import com.google.firebase.auth.FirebaseUser
 
 class SkaterLight(val id: String,
-                  val userName: String) : Parcelable {
+                  val userName: String,
+                  val photoUrl: String?)  {
 
-    constructor(parcel: Parcel) : this(
-        parcel.readString() ?: "",  // id
-        parcel.readString() ?: ""   // userName
-    )
-
-    override fun writeToParcel(parcel: Parcel, flags: Int) {
-        parcel.writeString(id)
-        parcel.writeString(userName)
-    }
-
-    override fun describeContents(): Int = 0
-
-    companion object CREATOR : Parcelable.Creator<SkaterLight> {
-        override fun createFromParcel(parcel: Parcel): SkaterLight {
-            return SkaterLight(parcel)
-        }
-
-        override fun newArray(size: Int): Array<SkaterLight?> {
-            return arrayOfNulls(size)
-        }
-
+    companion object {
         fun create(user: FirebaseUser): SkaterLight? {
             val name = user.displayName
             if (name != null) {
-                return SkaterLight(user.uid, name)
+                return SkaterLight(
+                    user.uid,
+                    name,
+                    photoUrl = if (user.photoUrl != null) {
+                        user.photoUrl.toString()
+                    } else {
+                        null
+                    }
+                )
             }
             return null
         }
 
-        // Updated factory method to support SkaterLightFeed
         fun create(feed: SkaterLightFeed?): SkaterLight? {
             if (feed?.id != null && feed.userName != null) {
-                return SkaterLight(feed.id, feed.userName)
+                return SkaterLight(feed.id, feed.userName, feed.photoUrl)
             }
             return null
-        }
-    }
-
-    class SkaterLightFeed(val id: String? = null,
-                          val userName: String? = null) : Parcelable {
-
-        constructor(parcel: Parcel) : this(
-            parcel.readString(),
-            parcel.readString()
-        )
-
-        override fun writeToParcel(parcel: Parcel, flags: Int) {
-            parcel.writeString(id)
-            parcel.writeString(userName)
-        }
-
-        override fun describeContents(): Int = 0
-
-        companion object CREATOR : Parcelable.Creator<SkaterLightFeed> {
-            override fun createFromParcel(parcel: Parcel): SkaterLightFeed {
-                return SkaterLightFeed(parcel)
-            }
-
-            override fun newArray(size: Int): Array<SkaterLightFeed?> {
-                return arrayOfNulls(size)
-            }
         }
     }
 }
+
+class SkaterLightFeed(val id: String? = null,
+                      val userName: String? = null,
+                      val photoUrl: String? = null) {
+
+
+}
+

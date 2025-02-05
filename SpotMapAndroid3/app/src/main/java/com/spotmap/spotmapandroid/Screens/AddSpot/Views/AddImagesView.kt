@@ -47,7 +47,7 @@ fun AddImagesView(modifier: Modifier = Modifier,
                   creationButtonTapped: ()->Unit = {},
                   imageSelected: SnapshotStateList<Uri>) {
 
-    TitleText("Select images (3/3)")
+    TitleText(text = "Select images (3/3)")
     BasicSpacer()
     ImagesSelectorView(imageSelected = imageSelected)
     BasicSpacer()

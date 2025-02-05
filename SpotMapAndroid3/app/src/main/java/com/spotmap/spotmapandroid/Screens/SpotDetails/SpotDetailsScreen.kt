@@ -34,15 +34,22 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.motionEventSpy
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.unit.dp
+import com.spotmap.spotmapandroid.Class.Comment
 import com.spotmap.spotmapandroid.Class.Spot
 import com.spotmap.spotmapandroid.Commons.CustomPageIndicator
 import com.spotmap.spotmapandroid.Commons.GeneralButton
 import com.spotmap.spotmapandroid.Commons.GeneralButtonStyle
 import com.spotmap.spotmapandroid.Commons.LargeTitleText
+import com.spotmap.spotmapandroid.Commons.NormalButton
 import com.spotmap.spotmapandroid.Commons.NormalText
+import com.spotmap.spotmapandroid.Commons.SeparatorView
 import com.spotmap.spotmapandroid.Commons.SmallNormalText
+import com.spotmap.spotmapandroid.Commons.TitleText
+import com.spotmap.spotmapandroid.Commons.Utils.convertToFastestUrl
 import com.spotmap.spotmapandroid.Screens.Map.Views.InfiniteCarousel
+import com.spotmap.spotmapandroid.Screens.SpotDetails.Views.CommentsView
 import com.spotmap.spotmapandroid.Screens.SpotDetails.Views.SpotDetailsView
+import com.spotmap.spotmapandroid.Screens.UserDetails.Views.UserImageView
 import java.nio.file.WatchEvent
 
 
@@ -53,6 +60,7 @@ fun SpotDetailsScreen(navController: NavController,
                       viewModel: SpotDetailsScreenViewModel) {
 
     val spot = viewModel.spot.observeAsState(null)
+    val comments = viewModel.comments.observeAsState(listOf())
     val items = viewModel.items.observeAsState(listOf())
 
     Scaffold(
@@ -78,10 +86,14 @@ fun SpotDetailsScreen(navController: NavController,
                     .background(colorResource(id = R.color.BackgroundColor))) {
                 items(items.value) { item ->
                     when (item) {
-                        SpotDetailsItem.SPOTDETAILS ->
-                            spot.value?.let { SpotDetailsView(it) }
-                        SpotDetailsItem.COMMENTS ->
-                            Text(text = "COMMENTS")
+                        SpotDetailsItem.SPOTDETAILS -> {
+                            spot.value?.let { SpotDetailsView(modifier = Modifier.padding(bottom = 16.dp), spot = it) }
+                            SeparatorView()
+                        }
+                         SpotDetailsItem.COMMENT -> {
+                             CommentsView(comments = comments.value)
+                             SeparatorView()
+                         }
                     }
                 }
             }
