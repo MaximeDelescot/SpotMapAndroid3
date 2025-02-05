@@ -1,5 +1,7 @@
 package com.spotmap.spotmapandroid.Screens.SpotDetails.Views
 
+import android.text.format.DateUtils
+import android.widget.Space
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -9,6 +11,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -21,9 +24,11 @@ import com.spotmap.spotmapandroid.Class.Comment
 import com.spotmap.spotmapandroid.Commons.CustomTextField
 import com.spotmap.spotmapandroid.Commons.NormalButton
 import com.spotmap.spotmapandroid.Commons.NormalText
+import com.spotmap.spotmapandroid.Commons.SmallNormalText
 import com.spotmap.spotmapandroid.Commons.Utils.convertToFastestUrl
 import com.spotmap.spotmapandroid.Screens.UserDetails.Views.UserImageView
 import com.spotmap.spotmapandroid.R
+import java.util.Date
 
 @Composable
 fun CommentsView(comments: List<Comment>) {
@@ -68,12 +73,27 @@ fun CommentView(comment: Comment) {
             onClick = {  })
         Spacer(Modifier.width(8.dp))
         Column {
-            Row() {
+            Row(verticalAlignment = Alignment.CenterVertically) {
                 NormalButton(
                     title = comment.creator.userName,
                     onClick = {})
+                Spacer(Modifier.width(4.dp))
+                SmallNormalText(
+                    comment.creationDate.timeSinceDate(),
+                    color = colorResource(id = R.color.LightDarker1Color))
             }
             NormalText(comment.content)
         }
     }
 }
+
+fun Date.timeSinceDate(): String {
+    return DateUtils.getRelativeTimeSpanString(
+        this.time,
+        System.currentTimeMillis(),
+        DateUtils.MINUTE_IN_MILLIS,
+        DateUtils.FORMAT_ABBREV_RELATIVE // Utilise des abréviations si possible
+    ).toString()
+}
+
+
