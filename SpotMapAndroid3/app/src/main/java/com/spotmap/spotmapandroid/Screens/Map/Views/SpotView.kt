@@ -91,7 +91,7 @@ fun SpotView(modifier: Modifier = Modifier,
                             spot.value?.getType().toString().uppercase(),
                             color = colorResource(id = R.color.LightColor)
                         )
-                        TitleText(
+                        LargeTitleText(
                             text = spot.value?.name ?: "",
                             maxLine = 2,
                             color = colorResource(id = R.color.LightColor)

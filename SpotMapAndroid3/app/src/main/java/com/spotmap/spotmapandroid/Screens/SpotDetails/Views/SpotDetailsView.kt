@@ -93,7 +93,7 @@ fun SpotDetailsView(modifier: Modifier = Modifier, spot: Spot) {
                     overflow = TextOverflow.Ellipsis
                 )
             }
-            TitleText(text = spot.name)
+            LargeTitleText(text = spot.name)
             SmallNormalText("Fake address bla 2 bla bla bla ")
             Spacer(Modifier.height(16.dp))
             if (!spot.description.isEmpty()) {

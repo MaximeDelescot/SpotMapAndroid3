@@ -62,5 +62,5 @@ fun LargeTitleText(text: String, color: Color = colorResource(id = R.color.Light
         color = color,
         fontWeight = FontWeight.Bold,
         maxLines = maxLine,
-        fontSize = 24.sp)
+        fontSize = 19.sp)
 }
