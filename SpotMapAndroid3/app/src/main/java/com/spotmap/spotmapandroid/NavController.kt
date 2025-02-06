@@ -35,7 +35,7 @@ fun MainApp() {
     val accountViewModel = AccountScreenViewModel(userHandler)
     val addSpotViewModel = AddSpotScreenViewModel(userHandler, apiService, storageService)
     val mapViewModel = MapScreenViewModel(apiService)
-    val spotDetailsModel = SpotDetailsScreenViewModel(apiService)
+    val spotDetailsModel = SpotDetailsScreenViewModel(apiService, userHandler)
     val userDetailsModel = UserDetailsScreenViewModel(userHandler, storageService, apiService)
 
     Scaffold(

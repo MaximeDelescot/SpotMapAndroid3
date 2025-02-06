@@ -14,6 +14,8 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ColorFilter
@@ -30,10 +32,15 @@ import com.spotmap.spotmapandroid.Commons.TitleButton
 import com.spotmap.spotmapandroid.Commons.Utils.convertToFastestUrl
 import com.spotmap.spotmapandroid.Screens.UserDetails.Views.UserImageView
 import com.spotmap.spotmapandroid.R
+import com.spotmap.spotmapandroid.Screens.SpotDetails.SpotDetailsScreenViewModel
+import kotlinx.coroutines.flow.MutableSharedFlow
 import java.util.Date
 
 @Composable
-fun CommentsView(comments: List<Comment>, commentsCount: Int) {
+fun CommentsView(comments: List<Comment>, commentsCount: Int, viewModel: SpotDetailsScreenViewModel) {
+
+    val commentTextState = remember { mutableStateOf("") }
+
     Column(modifier = Modifier
         .fillMaxWidth()
         .padding(16.dp),
@@ -46,11 +53,12 @@ fun CommentsView(comments: List<Comment>, commentsCount: Int) {
             CustomTextField(
                 placeholder = "Add a comment",
                 backgroundColorId = R.color.SecondaryColor,
+                textState = commentTextState,
                 onTextDidChange = {},
                 modifier = Modifier.weight(1f)
             )
 
-            IconButton(onClick = { }) {
+            IconButton(onClick = { viewModel.sendComment(commentTextState.value) }) {
                 Image(
                     painter = painterResource(id = R.drawable.ic_reply),
                     contentDescription = "Add comment",

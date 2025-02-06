@@ -12,6 +12,7 @@ import com.spotmap.spotmapandroid.Class.LoadableResource
 import com.spotmap.spotmapandroid.Class.LoadableResourceType
 import com.spotmap.spotmapandroid.Class.Spot
 import com.spotmap.spotmapandroid.Services.APIService
+import com.spotmap.spotmapandroid.Services.UserHandler
 import kotlinx.coroutines.launch
 
 enum class SpotDetailsItem {
@@ -20,7 +21,7 @@ enum class SpotDetailsItem {
     LOADING
 }
 
-class SpotDetailsScreenViewModel(val apiService: APIService): ViewModel() {
+class SpotDetailsScreenViewModel(val apiService: APIService, val userHandler: UserHandler): ViewModel() {
 
     private val _spot = MutableLiveData<LoadableResource<Spot>>()
     val spot: LiveData<LoadableResource<Spot>> = _spot
@@ -48,9 +49,33 @@ class SpotDetailsScreenViewModel(val apiService: APIService): ViewModel() {
         }
     }
 
+    fun sendComment(comment: String) {
+        _comments.value = LoadableResource.loading()
+        viewModelScope.launch {
+            try {
+                _comments.value = LoadableResource.loading()
+                val creator = userHandler.getUserLight()
+                val spot = _spot.value?.resource
+                if (spot != null && creator != null) {
+                    val comment = Comment(content = comment, creator = creator)
+                    apiService.addComment(
+                        spot = spot,
+                        comment = comment)
+                    loadSpot()
+                    loadComments()
+                }
+            } catch (e: Exception) {
+                Log.d("Failed to add comment:", "$e")
+            }
+
+        }
+    }
+
     fun setSpot(spot: Spot) {
         _spot.value = LoadableResource.loaded<Spot>(spot)
-        loadComments()
+        viewModelScope.launch {
+            loadComments()
+        }
     }
 
     private fun updateItems(spot: LoadableResource<Spot>, comments: LoadableResource<List<Comment>>) {
@@ -76,17 +101,28 @@ class SpotDetailsScreenViewModel(val apiService: APIService): ViewModel() {
         return list
     }
 
-    private fun loadComments() {
-
+    private suspend fun loadSpot() {
         _spot.value?.resource?.let {
             viewModelScope.launch {
+                try {
+                    val result = apiService.getSpot(it.id)
+                    _spot.value = LoadableResource.loaded<Spot>(result)
+                } catch (e: Exception){
+                    Log.d("Failed to load comments:", "$e")
+                }
+            }
+        }
+    }
+
+    private suspend fun loadComments() {
+        _comments.value = LoadableResource.loading()
+        _spot.value?.resource?.let {
                 try {
                     val result = apiService.getComments(spot = it, numberMax = 2)
                     _comments.value = LoadableResource.loaded<List<Comment>>(result)
                 } catch (e: Exception){
                     Log.d("Failed to load comments:", "$e")
                 }
-            }
         }
     }
 }

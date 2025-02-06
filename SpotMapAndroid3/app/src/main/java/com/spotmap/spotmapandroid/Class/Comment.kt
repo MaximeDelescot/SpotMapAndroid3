@@ -36,3 +36,21 @@ class CommentFeed(val id: String? = null,
                   val creator: SkaterLightFeed? = null,
                   val creationDate: Date? = null) {
 }
+
+
+
+class CommentRef (val refId: String) {
+    companion object {
+        fun create(feed: CommentRefFeed?): CommentRef? {
+            if (feed?.refId != null) {
+                return CommentRef(refId = feed.refId)
+            } else {
+                return null
+            }
+        }
+    }
+}
+
+class CommentRefFeed (val refId: String? = null) {
+
+}

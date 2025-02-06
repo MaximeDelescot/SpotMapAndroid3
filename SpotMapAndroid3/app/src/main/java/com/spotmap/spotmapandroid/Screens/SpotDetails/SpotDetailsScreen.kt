@@ -96,7 +96,10 @@ fun SpotDetailsScreen(navController: NavController,
                         }
                          SpotDetailsItem.COMMENT -> {
                              comments.value.resource?.let {
-                                 CommentsView(comments = it, commentsCount = spot.value?.resource?.commentCount ?: 0)
+                                 CommentsView(
+                                     comments = it,
+                                     commentsCount = spot.value?.resource?.commentCount ?: 0,
+                                     viewModel = viewModel)
                                  SeparatorView()
                              }
                          }
