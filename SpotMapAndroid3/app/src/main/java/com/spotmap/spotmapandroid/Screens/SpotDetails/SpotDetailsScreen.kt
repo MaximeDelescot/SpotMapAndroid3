@@ -26,6 +26,7 @@ import androidx.compose.runtime.livedata.observeAsState
 import com.spotmap.spotmapandroid.R
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -35,6 +36,7 @@ import androidx.compose.ui.input.pointer.motionEventSpy
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.unit.dp
 import com.spotmap.spotmapandroid.Class.Comment
+import com.spotmap.spotmapandroid.Class.LoadableResource
 import com.spotmap.spotmapandroid.Class.Spot
 import com.spotmap.spotmapandroid.Commons.CustomPageIndicator
 import com.spotmap.spotmapandroid.Commons.GeneralButton
@@ -60,7 +62,7 @@ fun SpotDetailsScreen(navController: NavController,
                       viewModel: SpotDetailsScreenViewModel) {
 
     val spot = viewModel.spot.observeAsState(null)
-    val comments = viewModel.comments.observeAsState(listOf())
+    val comments = viewModel.comments.observeAsState(LoadableResource.notLoaded())
     val items = viewModel.items.observeAsState(listOf())
 
     Scaffold(
@@ -87,13 +89,24 @@ fun SpotDetailsScreen(navController: NavController,
                 items(items.value) { item ->
                     when (item) {
                         SpotDetailsItem.SPOTDETAILS -> {
-                            spot.value?.let { SpotDetailsView(modifier = Modifier.padding(bottom = 16.dp), spot = it) }
-                            SeparatorView()
+                            spot.value?.resource?.let {
+                                SpotDetailsView(modifier = Modifier.padding(bottom = 16.dp), spot = it)
+                                SeparatorView()
+                            }
                         }
                          SpotDetailsItem.COMMENT -> {
-                             CommentsView(comments = comments.value, commentsCount = spot.value?.commentCount ?: 0)
-                             SeparatorView()
+                             comments.value.resource?.let {
+                                 CommentsView(comments = it, commentsCount = spot.value?.resource?.commentCount ?: 0)
+                                 SeparatorView()
+                             }
                          }
+                        SpotDetailsItem.LOADING -> {
+                            Row(modifier = modifier.fillMaxWidth().padding(16.dp),
+                                horizontalArrangement = Arrangement.Center) {
+                                CircularProgressIndicator(
+                                    color = colorResource(id= R.color.PrimaryColor))
+                            }
+                        }
                     }
                 }
             }
