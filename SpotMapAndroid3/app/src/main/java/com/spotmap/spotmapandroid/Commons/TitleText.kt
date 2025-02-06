@@ -24,7 +24,7 @@ fun VerySmallNormalText(modifier: Modifier = Modifier, text: String, color: Colo
 }
 
 @Composable
-fun SmallNormalText(text: String, color: Color = colorResource(id = R.color.LightColor), maxLine: Int = Int.MAX_VALUE, textAlign: TextAlign? = null) {
+fun SmallNormalText(text: String, modifier: Modifier = Modifier,  color: Color = colorResource(id = R.color.LightColor), maxLine: Int = Int.MAX_VALUE, textAlign: TextAlign? = null) {
     Text(text,
         textAlign = textAlign,
         color = color,
@@ -35,8 +35,9 @@ fun SmallNormalText(text: String, color: Color = colorResource(id = R.color.Ligh
 
 
 @Composable
-fun NormalText(text: String, color: Color = colorResource(id = R.color.LightColor), maxLine: Int = Int.MAX_VALUE, textAlign: TextAlign? = null) {
+fun NormalText(text: String, modifier: Modifier = Modifier, color: Color = colorResource(id = R.color.LightColor), maxLine: Int = Int.MAX_VALUE, textAlign: TextAlign? = null) {
     Text(text,
+        modifier = modifier,
         textAlign = textAlign,
         color = color,
         fontWeight = FontWeight.Normal,

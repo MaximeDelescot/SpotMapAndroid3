@@ -96,10 +96,17 @@ fun IconBorderButton(
 }
 
 @Composable
-fun NormalButton(title: String, onClick: () -> Unit) {
+fun TitleButton(title: String, onClick: () -> Unit, colorId: Int = R.color.PrimaryColor) {
     TitleText(modifier = Modifier.clickable(onClick = onClick),
         text = title,
-        color = colorResource(id = R.color.PrimaryColor))
+        color = colorResource(id = colorId))
+}
+
+@Composable
+fun  NormalButton(title: String, onClick: () -> Unit, colorId: Int = R.color.PrimaryColor) {
+    NormalText(modifier = Modifier.clickable(onClick = onClick),
+        text = title,
+        color = colorResource(id = colorId))
 }
 
 @Preview

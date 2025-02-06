@@ -22,19 +22,22 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.spotmap.spotmapandroid.Class.Comment
 import com.spotmap.spotmapandroid.Commons.CustomTextField
+import com.spotmap.spotmapandroid.Commons.GeneralButton
 import com.spotmap.spotmapandroid.Commons.NormalButton
 import com.spotmap.spotmapandroid.Commons.NormalText
 import com.spotmap.spotmapandroid.Commons.SmallNormalText
+import com.spotmap.spotmapandroid.Commons.TitleButton
 import com.spotmap.spotmapandroid.Commons.Utils.convertToFastestUrl
 import com.spotmap.spotmapandroid.Screens.UserDetails.Views.UserImageView
 import com.spotmap.spotmapandroid.R
 import java.util.Date
 
 @Composable
-fun CommentsView(comments: List<Comment>) {
+fun CommentsView(comments: List<Comment>, commentsCount: Int) {
     Column(modifier = Modifier
         .fillMaxWidth()
-        .padding(16.dp)) {
+        .padding(16.dp),
+        horizontalAlignment = Alignment.CenterHorizontally) {
 
         Row(
             modifier = Modifier.fillMaxWidth(),
@@ -55,17 +58,32 @@ fun CommentsView(comments: List<Comment>) {
                 )
             }
         }
+        if (comments.size == 0) {
+            Spacer(Modifier.height(16.dp))
+            SmallNormalText(
+                "No comment yet",
+                modifier= Modifier,
+                color = colorResource(id=R.color.LightDarker1Color))
+        } else {
+            for (comment in comments) {
+                Spacer(Modifier.height(16.dp))
+                CommentView(comment = comment, modifier = Modifier.fillMaxWidth())
+            }
 
-        Spacer(Modifier.height(16.dp))
-        for (comment in comments) {
-            CommentView(comment = comment)
+            if (commentsCount > 2) {
+                val countPlus = commentsCount - 2
+                NormalButton(
+                    colorId = R.color.LightDarker1Color,
+                    title = "See more (+$countPlus)",
+                    onClick = {})
+            }
         }
     }
 }
 
 @Composable
-fun CommentView(comment: Comment) {
-    Row(verticalAlignment = Alignment.Top, modifier = Modifier.padding(bottom = 16.dp)) {
+fun CommentView(comment: Comment, modifier: Modifier = Modifier) {
+    Row(verticalAlignment = Alignment.Top, modifier = modifier) {
         UserImageView(
             modifier = Modifier,
             url = comment.creator.photoUrl?.convertToFastestUrl(),
@@ -74,7 +92,7 @@ fun CommentView(comment: Comment) {
         Spacer(Modifier.width(8.dp))
         Column {
             Row(verticalAlignment = Alignment.CenterVertically) {
-                NormalButton(
+                TitleButton(
                     title = comment.creator.userName,
                     onClick = {})
                 Spacer(Modifier.width(4.dp))
