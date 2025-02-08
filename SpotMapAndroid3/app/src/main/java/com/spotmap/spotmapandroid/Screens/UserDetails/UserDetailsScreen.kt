@@ -67,9 +67,8 @@ fun UserDetailsScreen(navController: NavController,
                         UserDetailsItem.USERDETAILS ->
                             user.value?.let { UserDetailsView(
                                 user = it,
-                                editClick = {
-                                    launcher.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
-                                }) }
+                                settingClick = { viewModel.userHandler.logOut() },
+                                editClick = {launcher.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)) }) }
                         UserDetailsItem.LOADING ->
                             Row(modifier = modifier.fillMaxWidth().padding(16.dp),
                                 horizontalArrangement = Arrangement.Center) {

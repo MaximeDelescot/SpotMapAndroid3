@@ -90,7 +90,7 @@ fun SpotDetailsScreen(navController: NavController,
                     when (item) {
                         SpotDetailsItem.SPOTDETAILS -> {
                             spot.value?.resource?.let {
-                                SpotDetailsView(modifier = Modifier.padding(bottom = 16.dp), spot = it)
+                                SpotDetailsView(modifier = Modifier.padding(bottom = 8.dp), spot = it)
                                 SeparatorView()
                             }
                         }

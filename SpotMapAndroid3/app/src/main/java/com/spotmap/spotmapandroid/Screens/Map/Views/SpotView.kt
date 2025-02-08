@@ -39,6 +39,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.vector.Group
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextOverflow
@@ -47,9 +48,12 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import coil.compose.rememberImagePainter
+import coil.request.CachePolicy
+import coil.request.ImageRequest
 import com.spotmap.spotmapandroid.Class.Spot
 import com.spotmap.spotmapandroid.Commons.BasicSpacer
 import com.spotmap.spotmapandroid.Commons.CustomPageIndicator
+import com.spotmap.spotmapandroid.Commons.ImageFromUrl
 import com.spotmap.spotmapandroid.Commons.LargeTitleText
 import com.spotmap.spotmapandroid.Commons.SmallNormalText
 import com.spotmap.spotmapandroid.Commons.TitleText
@@ -195,13 +199,13 @@ fun InfiniteCarousel(
             beyondViewportPageCount = 1
         ) { page ->
             Column(modifier = Modifier.fillMaxSize()) {
-                AsyncImage(
-                    contentScale = ContentScale.Crop,
-                    modifier = Modifier.fillMaxSize(),
-                    model = imageUrls.value[page % imageUrls.value.size].convertToFastestUrl(),
-                    contentDescription = null
+                ImageFromUrl(
+                    url = imageUrls.value[page % imageUrls.value.size].convertToFastestUrl(),
+                    modifier = Modifier.fillMaxWidth(),
+                    contentScale = ContentScale.Crop
                 )
             }
         }
     }
 }
+

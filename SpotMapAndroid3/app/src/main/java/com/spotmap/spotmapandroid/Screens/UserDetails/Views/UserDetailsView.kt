@@ -41,6 +41,7 @@ import coil.compose.AsyncImage
 import com.spotmap.spotmapandroid.Class.Skater
 import com.spotmap.spotmapandroid.Commons.GeneralButton
 import com.spotmap.spotmapandroid.Commons.GeneralButtonStyle
+import com.spotmap.spotmapandroid.Commons.ImageFromUrl
 import com.spotmap.spotmapandroid.Commons.LargeTitleText
 import com.spotmap.spotmapandroid.Commons.SmallNormalText
 import com.spotmap.spotmapandroid.Commons.TitleText
@@ -49,7 +50,7 @@ import com.spotmap.spotmapandroid.Commons.VerySmallNormalText
 import com.spotmap.spotmapandroid.R
 
 @Composable
-fun UserDetailsView(user: Skater, editClick: () -> Unit) {
+fun UserDetailsView(user: Skater, editClick: () -> Unit, settingClick: () -> Unit) {
     Column(modifier = Modifier.padding(16.dp)) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
@@ -67,9 +68,7 @@ fun UserDetailsView(user: Skater, editClick: () -> Unit) {
                             text = user.userName,
                             color = colorResource(id = R.color.LightColor))
                     Spacer(modifier = Modifier.weight(1f))
-                    IconButton(onClick = {
-
-                    }) {
+                    IconButton(onClick = settingClick) {
                         Image(
                             painter = painterResource(id = R.drawable.ic_settings),
                             contentDescription = "logo app",
@@ -121,6 +120,13 @@ fun UserImageView(modifier: Modifier, url: String?, height: Dp, displayButton: B
             .size(height)
             .clip(CircleShape)
     ) {
+
+        ImageFromUrl(modifier = modifier
+            .fillMaxSize()
+            .clip(CircleShape),
+            contentScale = ContentScale.Crop,
+        url = url)
+
         AsyncImage(
             contentScale = ContentScale.Crop,
             modifier = modifier

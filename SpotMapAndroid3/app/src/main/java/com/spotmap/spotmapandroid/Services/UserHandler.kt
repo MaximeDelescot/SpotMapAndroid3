@@ -30,6 +30,15 @@ class UserHandler(val apiService: APIService) {
         auth.addAuthStateListener(authStateListener)
     }
 
+    fun isLogged(): Boolean {
+        val user = auth.currentUser
+        if (user != null) {
+            return true
+        } else {
+            return false
+        }
+    }
+
     fun getUser(): Skater? {
         val user = auth.currentUser
         if (user != null) {
@@ -54,7 +63,7 @@ class UserHandler(val apiService: APIService) {
 
     suspend fun login(email: String, password: String) {
         return suspendCancellableCoroutine<Unit> { cont ->
-            FirebaseAuth.getInstance().signInWithEmailAndPassword(email, password)
+            auth.signInWithEmailAndPassword(email, password)
                 .addOnCompleteListener { task ->
                     if (task.isSuccessful) {
                         cont.resume(Unit, onCancellation = null)

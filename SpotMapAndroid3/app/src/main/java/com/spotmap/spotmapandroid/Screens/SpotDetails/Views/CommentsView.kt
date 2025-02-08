@@ -43,44 +43,45 @@ fun CommentsView(comments: List<Comment>, commentsCount: Int, viewModel: SpotDet
 
     Column(modifier = Modifier
         .fillMaxWidth()
-        .padding(16.dp),
+        .padding(start = 16.dp, end = 16.dp),
         horizontalAlignment = Alignment.CenterHorizontally) {
 
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            CustomTextField(
-                placeholder = "Add a comment",
-                backgroundColorId = R.color.SecondaryColor,
-                textState = commentTextState,
-                onTextDidChange = {},
-                modifier = Modifier.weight(1f)
-            )
-
-            IconButton(onClick = { viewModel.sendComment(commentTextState.value) }) {
-                Image(
-                    painter = painterResource(id = R.drawable.ic_reply),
-                    contentDescription = "Add comment",
-                    colorFilter = ColorFilter.tint(colorResource(id = R.color.LightColor))
+        if (viewModel.userHandler.isLogged()) {
+            Row(
+                modifier = Modifier.fillMaxWidth().padding(top = 8.dp, bottom = 8.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                CustomTextField(
+                    placeholder = "Add a comment",
+                    backgroundColorId = R.color.SecondaryColor,
+                    textState = commentTextState,
+                    onTextDidChange = {},
+                    modifier = Modifier.weight(1f)
                 )
+
+
+                IconButton(onClick = { viewModel.sendComment(commentTextState.value) }) {
+                    Image(
+                        painter = painterResource(id = R.drawable.ic_reply),
+                        contentDescription = "Add comment",
+                        colorFilter = ColorFilter.tint(colorResource(id = R.color.LightColor))
+                    )
+                }
             }
         }
-        if (comments.size == 0) {
-            Spacer(Modifier.height(16.dp))
-            SmallNormalText(
+        if (comments.size == 0) { SmallNormalText(
                 "No comment yet",
-                modifier= Modifier,
+                modifier= Modifier.padding(top = 8.dp, bottom = 8.dp),
                 color = colorResource(id=R.color.LightDarker1Color))
         } else {
             for (comment in comments) {
-                Spacer(Modifier.height(16.dp))
-                CommentView(comment = comment, modifier = Modifier.fillMaxWidth())
+                CommentView(comment = comment, modifier = Modifier.padding(top = 8.dp, bottom = 8.dp).fillMaxWidth())
             }
 
             if (commentsCount > 2) {
                 val countPlus = commentsCount - 2
                 NormalButton(
+                    modifier = Modifier.padding(top = 8.dp, bottom = 8.dp),
                     colorId = R.color.LightDarker1Color,
                     title = "See more (+$countPlus)",
                     onClick = {})

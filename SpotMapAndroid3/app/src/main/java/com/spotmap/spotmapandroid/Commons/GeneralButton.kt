@@ -103,8 +103,8 @@ fun TitleButton(title: String, onClick: () -> Unit, colorId: Int = R.color.Prima
 }
 
 @Composable
-fun  NormalButton(title: String, onClick: () -> Unit, colorId: Int = R.color.PrimaryColor) {
-    NormalText(modifier = Modifier.clickable(onClick = onClick),
+fun  NormalButton(title: String, onClick: () -> Unit, colorId: Int = R.color.PrimaryColor, modifier: Modifier = Modifier) {
+    NormalText(modifier = modifier.clickable(onClick = onClick),
         text = title,
         color = colorResource(id = colorId))
 }
