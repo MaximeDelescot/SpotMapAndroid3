@@ -3,13 +3,18 @@ package com.spotmap.spotmapandroid.Screens.SpotDetails.Views
 import android.text.format.DateUtils
 import android.widget.Space
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -18,9 +23,12 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.dp
 import com.spotmap.spotmapandroid.Class.Comment
 import com.spotmap.spotmapandroid.Commons.CustomTextField
@@ -48,7 +56,9 @@ fun CommentsView(comments: List<Comment>, commentsCount: Int, viewModel: SpotDet
 
         if (viewModel.userHandler.isLogged()) {
             Row(
-                modifier = Modifier.fillMaxWidth().padding(top = 8.dp, bottom = 8.dp),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 8.dp, bottom = 8.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 CustomTextField(
@@ -75,7 +85,9 @@ fun CommentsView(comments: List<Comment>, commentsCount: Int, viewModel: SpotDet
                 color = colorResource(id=R.color.LightDarker1Color))
         } else {
             for (comment in comments) {
-                CommentView(comment = comment, modifier = Modifier.padding(top = 8.dp, bottom = 8.dp).fillMaxWidth())
+                CommentView(comment = comment, modifier = Modifier
+                    .padding(top = 8.dp, bottom = 8.dp)
+                    .fillMaxWidth())
             }
 
             if (commentsCount > 2) {
@@ -101,13 +113,30 @@ fun CommentView(comment: Comment, modifier: Modifier = Modifier) {
         Spacer(Modifier.width(8.dp))
         Column {
             Row(verticalAlignment = Alignment.CenterVertically) {
-                TitleButton(
-                    title = comment.creator.userName,
-                    onClick = {})
-                Spacer(Modifier.width(4.dp))
-                SmallNormalText(
-                    comment.creationDate.timeSinceDate(),
-                    color = colorResource(id = R.color.LightDarker1Color))
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    TitleButton(
+                        title = comment.creator.userName,
+                        onClick = {})
+                    Spacer(Modifier.width(4.dp))
+                    SmallNormalText(
+                        comment.creationDate.timeSinceDate(),
+                        color = colorResource(id = R.color.LightDarker1Color))
+                }
+
+                Spacer(modifier = Modifier.weight(1f))
+
+                IconButton(
+                    onClick = { },
+                    modifier = Modifier
+                        .size(20.dp)
+                ) {
+                    Icon(
+                        imageVector = ImageVector.vectorResource(id = R.drawable.ic_more),
+                        contentDescription = null,
+                        tint = colorResource(id = R.color.LightDarker1Color),
+                    )
+                }
+
             }
             NormalText(comment.content)
         }
