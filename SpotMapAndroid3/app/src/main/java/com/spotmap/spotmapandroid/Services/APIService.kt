@@ -56,9 +56,7 @@ class APIService(val db: FirebaseFirestore = Firebase.firestore) {
             .get()
             .addOnSuccessListener { snapshot ->
                 try {
-                    Log.d("GET SPOT :::", "try 1")
                     val spot = Spot.create(snapshot.toObject<SpotFeed>()) ?: throw Throwable(message = "failed to deserialized spot")
-                    Log.d("GET SPOT :::", "try 2 $spot")
                     continuation.resume(spot)
                 } catch (e: Exception) {
                     continuation.resumeWithException(e)

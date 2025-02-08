@@ -6,6 +6,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.spotmap.spotmapandroid.Class.Spot
+import com.spotmap.spotmapandroid.Commons.Utils.convertToFastestUrl
 import com.spotmap.spotmapandroid.Screens.AddSpot.AddSpotScreenViewModel.AddSpotScreenViewType
 import com.spotmap.spotmapandroid.Services.APIService
 import com.spotmap.spotmapandroid.Services.StorageService
