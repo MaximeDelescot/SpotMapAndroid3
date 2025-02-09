@@ -31,6 +31,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.dp
 import com.spotmap.spotmapandroid.Class.Comment
+import com.spotmap.spotmapandroid.Class.SkaterLight
 import com.spotmap.spotmapandroid.Commons.CustomTextField
 import com.spotmap.spotmapandroid.Commons.GeneralButton
 import com.spotmap.spotmapandroid.Commons.NormalButton
@@ -45,7 +46,10 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 import java.util.Date
 
 @Composable
-fun CommentsView(comments: List<Comment>, commentsCount: Int, viewModel: SpotDetailsScreenViewModel) {
+fun CommentsView(comments: List<Comment>,
+                 commentsCount: Int,
+                 viewModel: SpotDetailsScreenViewModel,
+                 skaterNameClick: (SkaterLight) -> Unit) {
 
     val commentTextState = remember { mutableStateOf("") }
 
@@ -85,7 +89,10 @@ fun CommentsView(comments: List<Comment>, commentsCount: Int, viewModel: SpotDet
                 color = colorResource(id=R.color.LightDarker1Color))
         } else {
             for (comment in comments) {
-                CommentView(comment = comment, modifier = Modifier
+                CommentView(
+                    comment = comment,
+                    nameClick = { skaterNameClick(comment.creator) },
+                    modifier = Modifier
                     .padding(top = 8.dp, bottom = 8.dp)
                     .fillMaxWidth())
             }
@@ -103,7 +110,7 @@ fun CommentsView(comments: List<Comment>, commentsCount: Int, viewModel: SpotDet
 }
 
 @Composable
-fun CommentView(comment: Comment, modifier: Modifier = Modifier) {
+fun CommentView(comment: Comment, modifier: Modifier = Modifier, nameClick: () -> Unit) {
     Row(verticalAlignment = Alignment.Top, modifier = modifier) {
         UserImageView(
             modifier = Modifier,
@@ -116,7 +123,7 @@ fun CommentView(comment: Comment, modifier: Modifier = Modifier) {
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     TitleButton(
                         title = comment.creator.userName,
-                        onClick = {})
+                        onClick = nameClick)
                     Spacer(Modifier.width(4.dp))
                     SmallNormalText(
                         comment.creationDate.timeSinceDate(),

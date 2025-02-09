@@ -37,6 +37,8 @@ import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.unit.dp
 import com.spotmap.spotmapandroid.Class.Comment
 import com.spotmap.spotmapandroid.Class.LoadableResource
+import com.spotmap.spotmapandroid.Class.Skater
+import com.spotmap.spotmapandroid.Class.SkaterLight
 import com.spotmap.spotmapandroid.Class.Spot
 import com.spotmap.spotmapandroid.Commons.CustomPageIndicator
 import com.spotmap.spotmapandroid.Commons.GeneralButton
@@ -51,6 +53,7 @@ import com.spotmap.spotmapandroid.Commons.Utils.convertToFastestUrl
 import com.spotmap.spotmapandroid.Screens.Map.Views.InfiniteCarousel
 import com.spotmap.spotmapandroid.Screens.SpotDetails.Views.CommentsView
 import com.spotmap.spotmapandroid.Screens.SpotDetails.Views.SpotDetailsView
+import com.spotmap.spotmapandroid.Screens.UserDetails.UserDetailsScreenViewModel
 import com.spotmap.spotmapandroid.Screens.UserDetails.Views.UserImageView
 import java.nio.file.WatchEvent
 
@@ -59,11 +62,17 @@ import java.nio.file.WatchEvent
 @Composable
 fun SpotDetailsScreen(navController: NavController,
                       modifier: Modifier = Modifier,
-                      viewModel: SpotDetailsScreenViewModel) {
+                      viewModel: SpotDetailsScreenViewModel,
+                      userDetailsScreenViewModel: UserDetailsScreenViewModel) {
 
     val spot = viewModel.spot.observeAsState(null)
     val comments = viewModel.comments.observeAsState(LoadableResource.notLoaded())
     val items = viewModel.items.observeAsState(listOf())
+
+    fun goToSkaterDetails(skater: SkaterLight) {
+        userDetailsScreenViewModel.updateSkaterId(skater.id)
+        navController.navigate("userDetails")
+    }
 
     Scaffold(
         topBar = {
@@ -99,7 +108,10 @@ fun SpotDetailsScreen(navController: NavController,
                                  CommentsView(
                                      comments = it,
                                      commentsCount = spot.value?.resource?.commentCount ?: 0,
-                                     viewModel = viewModel)
+                                     viewModel = viewModel,
+                                     skaterNameClick = { skater ->
+                                         goToSkaterDetails(skater)
+                                     })
                                  SeparatorView()
                              }
                          }

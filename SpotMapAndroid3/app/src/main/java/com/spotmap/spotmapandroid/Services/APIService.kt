@@ -13,6 +13,7 @@ import com.spotmap.spotmapandroid.Class.Comment
 import com.spotmap.spotmapandroid.Class.CommentFeed
 import com.spotmap.spotmapandroid.Class.CommentRef
 import com.spotmap.spotmapandroid.Class.Skater
+import com.spotmap.spotmapandroid.Class.SkaterFeed
 import com.spotmap.spotmapandroid.Class.Spot
 import com.spotmap.spotmapandroid.Class.SpotFeed
 import com.spotmap.spotmapandroid.Class.SpotRef
@@ -120,6 +121,23 @@ class APIService(val db: FirebaseFirestore = Firebase.firestore) {
                     continuation.resumeWithException(e)
                 }
         }
+    }
+
+    suspend fun getSkater(id: String): Skater = suspendCancellableCoroutine { continuation ->
+        db.collection(APICollectionName.skaters)
+            .document(id)
+            .get()
+            .addOnSuccessListener { snapshot ->
+                try {
+                    val spot = Skater.create(snapshot.toObject<SkaterFeed>()) ?: throw Throwable(message = "failed to deserialized Skater")
+                    continuation.resume(spot)
+                } catch (e: Exception) {
+                    continuation.resumeWithException(e)
+                }
+            }
+            .addOnFailureListener { exception ->
+                continuation.resumeWithException(exception)
+            }
     }
 
     suspend fun getComments(spot: Spot, numberMax: Int? = null): List<Comment> = suspendCancellableCoroutine { continuation ->

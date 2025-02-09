@@ -25,5 +25,31 @@ class Skater(val id: String,
             }
             return null
         }
+
+        fun create(skaterFeed: SkaterFeed?): Skater? {
+
+
+            if (skaterFeed?.id != null
+                && skaterFeed.userName != null
+                && skaterFeed.email != null
+                && skaterFeed.photoUrl != null
+                && skaterFeed.creationDate != null) {
+                return Skater(id = skaterFeed.id,
+                    userName = skaterFeed.userName,
+                    email = skaterFeed.email,
+                    photoUrl = skaterFeed.photoUrl,
+                    creationDate = skaterFeed.creationDate)
+            }
+            return null
+        }
     }
+}
+
+class SkaterFeed(val id: String? = null,
+                 val userName: String? = null,
+                 val email: String? = null,
+                 val photoUrl: String? = null,
+                 val creationDate: Date? = null) {
+
+
 }

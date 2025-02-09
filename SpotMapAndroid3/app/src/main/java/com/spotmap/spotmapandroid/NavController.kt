@@ -36,15 +36,23 @@ fun MainApp() {
     val addSpotViewModel = AddSpotScreenViewModel(userHandler, apiService, storageService)
     val mapViewModel = MapScreenViewModel(apiService)
     val spotDetailsModel = SpotDetailsScreenViewModel(apiService, userHandler)
-    val userDetailsModel = UserDetailsScreenViewModel(userHandler, storageService, apiService)
+
+    val userDetailsModel = UserDetailsScreenViewModel(
+        userHandler,
+        storageService,
+        apiService)
 
     Scaffold(
-        bottomBar = { BottomBar(navController = navController) }
+        bottomBar = { BottomBar(
+            navController = navController,
+            userHandler = userHandler) }
     ) { innerPadding ->
         NavHost(
             navController = navController,
             startDestination = "map",
-            modifier = Modifier.padding(innerPadding).fillMaxSize()
+            modifier = Modifier
+                .padding(innerPadding)
+                .fillMaxSize()
         ) {
             composable("map") {
                 MapScreen(
@@ -69,7 +77,8 @@ fun MainApp() {
             composable("spotDetails") {
                 SpotDetailsScreen(
                     navController = navController,
-                    viewModel = spotDetailsModel)
+                    viewModel = spotDetailsModel,
+                    userDetailsScreenViewModel = userDetailsModel)
             }
             composable("userDetails") {
                 UserDetailsScreen(

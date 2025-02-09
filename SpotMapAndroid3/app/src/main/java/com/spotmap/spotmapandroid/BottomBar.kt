@@ -12,9 +12,10 @@ import androidx.compose.ui.res.painterResource
 import androidx.navigation.NavController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import com.spotmap.spotmapandroid.Screens.Account.AccountScreenViewModel
+import com.spotmap.spotmapandroid.Services.UserHandler
 
 @Composable
-fun BottomBar(navController: NavController) {
+fun BottomBar(navController: NavController, userHandler: UserHandler) {
 
     val currentBackStackEntry = navController.currentBackStackEntryAsState().value
     val currentRoute = currentBackStackEntry?.destination?.route
@@ -87,10 +88,24 @@ fun BottomBar(navController: NavController) {
             label = { Text("Account") },
             selected = currentRoute == "account",
             onClick = {
-                navController.navigate("account") {
-                    popUpTo(navController.graph.startDestinationId) { saveState = true }
-                    launchSingleTop = true
-                    restoreState = true
+                if (userHandler.isLogged()) {
+                    navController.navigate("userDetails") {
+                        popUpTo(navController.graph.startDestinationId) {
+                            inclusive = true
+                            saveState = true
+                        }
+                        launchSingleTop = true
+                        restoreState = true
+                    }
+                } else {
+                    navController.navigate("account") {
+                        popUpTo(navController.graph.startDestinationId) {
+                            saveState = true
+                            inclusive = true
+                        }
+                        launchSingleTop = true
+                        restoreState = true
+                    }
                 }
             },
             colors = NavigationBarItemDefaults.colors(

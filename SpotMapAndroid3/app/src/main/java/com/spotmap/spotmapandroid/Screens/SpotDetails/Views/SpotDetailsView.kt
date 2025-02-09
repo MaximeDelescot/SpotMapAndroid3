@@ -34,7 +34,7 @@ import java.security.acl.Group
 
 
 @Composable
-fun SpotDetailsView(modifier: Modifier = Modifier, spot: Spot) {
+fun SpotDetailsView(modifier: Modifier = Modifier, spot: Spot   ) {
 
     val currentIndex = remember { mutableStateOf(0) }
 

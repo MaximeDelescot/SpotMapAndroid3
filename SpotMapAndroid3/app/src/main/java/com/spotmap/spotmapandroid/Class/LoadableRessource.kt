@@ -6,14 +6,14 @@ enum class LoadableResourceType {
 
 class LoadableResource<T>(var status: LoadableResourceType = LoadableResourceType.NOT_LOADED,
                           var resource: T? = null,
-                          var error: Error? = null) {
+                          var exception: Exception? = null) {
 
     companion object {
         fun <T> loaded(resource: T): LoadableResource<T> {
             return LoadableResource(
                 status = LoadableResourceType.LOADED,
                 resource = resource,
-                error = null
+                exception = null
             )
         }
 
@@ -21,8 +21,8 @@ class LoadableResource<T>(var status: LoadableResourceType = LoadableResourceTyp
             return LoadableResource(status = LoadableResourceType.LOADING)
         }
 
-        fun <T> failed(error: Error): LoadableResource<T> {
-            return LoadableResource(status = LoadableResourceType.FAILED, error = error)
+        fun <T> failed(exception: Exception): LoadableResource<T> {
+            return LoadableResource(status = LoadableResourceType.FAILED, exception = exception)
         }
 
         fun <T> notLoaded(): LoadableResource<T> {

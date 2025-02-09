@@ -50,7 +50,7 @@ import com.spotmap.spotmapandroid.Commons.VerySmallNormalText
 import com.spotmap.spotmapandroid.R
 
 @Composable
-fun UserDetailsView(user: Skater, editClick: () -> Unit, settingClick: () -> Unit) {
+fun UserDetailsView(user: Skater, editClick: () -> Unit, settingClick: () -> Unit, isCurrentUserPage: Boolean) {
     Column(modifier = Modifier.padding(16.dp)) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
@@ -59,7 +59,7 @@ fun UserDetailsView(user: Skater, editClick: () -> Unit, settingClick: () -> Uni
                 modifier = Modifier,
                 url = user.photoUrl,
                 height = 80.dp,
-                displayButton = true,
+                displayButton = isCurrentUserPage,
                 onClick = editClick)
             Spacer(modifier = Modifier.width(16.dp))
             Column(modifier = Modifier.weight(1f)) {
@@ -68,11 +68,13 @@ fun UserDetailsView(user: Skater, editClick: () -> Unit, settingClick: () -> Uni
                             text = user.userName,
                             color = colorResource(id = R.color.LightColor))
                     Spacer(modifier = Modifier.weight(1f))
-                    IconButton(onClick = settingClick) {
-                        Image(
-                            painter = painterResource(id = R.drawable.ic_settings),
-                            contentDescription = "logo app",
-                            colorFilter = ColorFilter.tint(colorResource(id = R.color.LightDarker2Color)) )
+                    if (isCurrentUserPage == true) {
+                        IconButton(onClick = settingClick, modifier = Modifier.size(24.dp)) {
+                            Image(
+                                painter = painterResource(id = R.drawable.ic_settings),
+                                contentDescription = "logo app",
+                                colorFilter = ColorFilter.tint(colorResource(id = R.color.LightDarker2Color)) )
+                        }
                     }
                 }
                 Row {
@@ -95,11 +97,13 @@ fun UserDetailsView(user: Skater, editClick: () -> Unit, settingClick: () -> Uni
                 }
             }
         }
-        Spacer(Modifier.height(16.dp))
-        GeneralButton(
-            title = "Follow",
-            onClick = {},
-            style = GeneralButtonStyle.PRIMARY)
+        if (isCurrentUserPage == false) {
+            Spacer(Modifier.height(16.dp))
+            GeneralButton(
+                title = "Follow",
+                onClick = {},
+                style = GeneralButtonStyle.PRIMARY)
+        }
     }
 }
 @Composable

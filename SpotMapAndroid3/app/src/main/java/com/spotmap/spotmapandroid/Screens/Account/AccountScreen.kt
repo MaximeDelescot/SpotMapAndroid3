@@ -38,7 +38,7 @@ fun AccountScreen(navController: NavController,
 
     LaunchedEffect(displayedView) {
         if (displayedView == AccountScreenViewModel.DisplayedView.LOGGED) {
-            navController.navigate("userDetails")
+           navController.navigate("userDetails")
         }
     }
 
