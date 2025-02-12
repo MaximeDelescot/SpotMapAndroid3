@@ -80,7 +80,7 @@ fun UserDetailsView(user: Skater, editClick: () -> Unit, settingClick: () -> Uni
                 Row {
                     UserCountView(
                         modifier= Modifier.weight(1f),
-                        count = 12,
+                        count = user.videoCount,
                         title = "Video")
                     UserCountView(
                         modifier= Modifier.weight(1f),

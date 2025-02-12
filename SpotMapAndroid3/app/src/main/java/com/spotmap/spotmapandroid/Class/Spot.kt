@@ -26,6 +26,7 @@ class Spot(
     spotEnum: SpotType,
     val coordinate: Coordinate,
     val commentCount: Int,
+    val videoCount: Int,
     var normalImageUrls: List<String>,
     var smallImageUrls: List<String>,
     var needToPay: Boolean,
@@ -83,7 +84,8 @@ class Spot(
                         shelteredFromRain = feed.shelteredFromRain ?: false,
                         hasFixedHours = feed.hasFixedHours ?: false,
                         hasLighting = feed.hasLighting ?: false,
-                        commentCount = feed.commentCount ?: 0
+                        commentCount = feed.commentCount ?: 0,
+                        videoCount = feed.videoCount ?: 0
                     )
                 }
             }
@@ -102,6 +104,7 @@ class SpotFeed(
     val description: String? = null,
     val type: String? = null,
     var commentCount: Int? = null,
+    var videoCount: Int? = null,
     val coordinate: Coordinate.CoordinateFeed? = null,
     var normalImageUrls: List<String>? = null,
     var smallImageUrls: List<String>? = null,

@@ -75,6 +75,13 @@ fun SpotDetailsView(modifier: Modifier = Modifier, spot: Spot   ) {
                         iconId=R.drawable.ic_comment,
                         value = spot.commentCount)
                 }
+
+                if (spot.videoCount > 0) {
+                    Spacer(modifier = Modifier.width(8.dp))
+                    IconWithValueView(
+                        iconId= R.drawable.ic_video,
+                        value = spot.videoCount)
+                }
             }
         }
 

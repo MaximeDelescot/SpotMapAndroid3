@@ -85,7 +85,8 @@ class AddSpotScreenViewModel (val userHandler: UserHandler,
                     shelteredFromRain = shelteredFromRain,
                     hasFixedHours = hasFixedHours,
                     hasLighting = hasLighting,
-                    commentCount = 0
+                    commentCount = 0,
+                    videoCount = 0
                 )
 
                 try {

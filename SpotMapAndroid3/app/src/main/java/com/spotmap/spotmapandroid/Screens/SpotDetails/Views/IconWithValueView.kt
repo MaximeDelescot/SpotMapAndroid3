@@ -3,9 +3,11 @@ package com.spotmap.spotmapandroid.Screens.SpotDetails.Views
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -25,7 +27,6 @@ fun IconWithValueView(iconId: Int, value: Int) {
             painter = painterResource(id = iconId),
             contentDescription = "logo app",
             colorFilter = ColorFilter.tint(colorResource(id = R.color.LightColor)) )
-
         SmallNormalText(value.toString())
     }
 }

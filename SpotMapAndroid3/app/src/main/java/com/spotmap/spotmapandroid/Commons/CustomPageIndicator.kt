@@ -40,7 +40,7 @@ fun CustomPageIndicator(modifier: Modifier = Modifier, currentIndex: MutableStat
 @Composable
 fun CustomIndicator(isSelected: Boolean) {
 
-    val color = if (isSelected) {colorResource(id = R.color.PrimaryColor)} else {colorResource(id = R.color.LightColor)}
+    val color = if (isSelected) {colorResource(id = R.color.PrimaryColor)} else {colorResource(id = R.color.LightDarker2Color)}
     Box(
         modifier = Modifier
             .size(width = 8.dp, height = 8.dp)

@@ -110,6 +110,12 @@ fun SpotView(modifier: Modifier = Modifier,
                                     iconId=R.drawable.ic_comment,
                                     value = (spot.value?.commentCount ?: 0 ))
                             }
+                            if ((spot.value?.videoCount ?: 0 ) > 0) {
+                                Spacer(modifier = Modifier.width(8.dp))
+                                IconWithValueView(
+                                    iconId= R.drawable.ic_video,
+                                    value = (spot.value?.videoCount ?: 0 ))
+                            }
                         }
                         Spacer(modifier = Modifier.weight(1f))
                     }

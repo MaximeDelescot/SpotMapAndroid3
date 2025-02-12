@@ -7,6 +7,7 @@ class Skater(val id: String,
              val userName: String,
              val email: String,
              val photoUrl: String?,
+             val videoCount: Int,
              val creationDate: Date = Date(System.currentTimeMillis())) {
 
     companion object {
@@ -21,13 +22,13 @@ class Skater(val id: String,
                 return Skater(id = user.uid,
                     userName = name,
                     email = email,
-                    photoUrl = photoUrl)
+                    photoUrl = photoUrl,
+                    videoCount = 0)
             }
             return null
         }
 
         fun create(skaterFeed: SkaterFeed?): Skater? {
-
 
             if (skaterFeed?.id != null
                 && skaterFeed.userName != null
@@ -38,7 +39,8 @@ class Skater(val id: String,
                     userName = skaterFeed.userName,
                     email = skaterFeed.email,
                     photoUrl = skaterFeed.photoUrl,
-                    creationDate = skaterFeed.creationDate)
+                    creationDate = skaterFeed.creationDate,
+                    videoCount = skaterFeed.videoCount ?: 0)
             }
             return null
         }
@@ -48,8 +50,8 @@ class Skater(val id: String,
 class SkaterFeed(val id: String? = null,
                  val userName: String? = null,
                  val email: String? = null,
+                 val videoCount: Int? = null,
                  val photoUrl: String? = null,
                  val creationDate: Date? = null) {
-
 
 }
