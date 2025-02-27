@@ -14,6 +14,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -37,10 +38,14 @@ import com.spotmap.spotmapandroid.Commons.NormalText
 import com.spotmap.spotmapandroid.Commons.SmallNormalText
 import com.spotmap.spotmapandroid.Commons.TitleButton
 import com.spotmap.spotmapandroid.Commons.UserImageView
+import com.spotmap.spotmapandroid.Commons.VideoPlayer
 import com.spotmap.spotmapandroid.R
 
 @Composable
 fun PublicationView(publication: Publication, nameClick: () -> Unit, modifier: Modifier) {
+
+    var isPlaying = remember { mutableStateOf(true) }
+
     Column(modifier = modifier.padding(top = 8.dp, bottom = 8.dp)) {
         Row(verticalAlignment = Alignment.Top) {
             UserImageView(
@@ -82,9 +87,15 @@ fun PublicationView(publication: Publication, nameClick: () -> Unit, modifier: M
 
         publication.videoUrl?.let {
             Spacer(Modifier.height(8.dp))
+
+            @androidx.media3.common.util.UnstableApi
             VideoPlayer(
                 modifier= Modifier.fillMaxWidth().aspectRatio(3f / 4f),
-                videoUrl = it)
+                videoUrl = it,
+                isPlaying = isPlaying.value,
+                onPlayStateChanged = { playing ->
+                    isPlaying.value = playing
+                })
         }
 
         publication.description?.let {
@@ -92,36 +103,6 @@ fun PublicationView(publication: Publication, nameClick: () -> Unit, modifier: M
             NormalText(it,
                 modifier = Modifier,
                 color = colorResource(id= R.color.LightColor))
-        }
-    }
-}
-
-@androidx.media3.common.util.UnstableApi
-@Composable
-fun VideoPlayer(modifier: Modifier = Modifier, videoUrl: String) {
-    val context = LocalContext.current
-    val exoPlayer = remember {
-        ExoPlayer.Builder(context).build().apply {
-            setMediaItem(MediaItem.fromUri(videoUrl))
-            prepare()
-            playWhenReady = true
-        }
-    }
-
-    AndroidView(
-        modifier = modifier
-            .clip(RectangleShape),
-        factory = {
-            PlayerView(it).apply {
-                useController = false
-                player = exoPlayer
-                resizeMode = AspectRatioFrameLayout.RESIZE_MODE_ZOOM
-            }
-        }
-    )
-    DisposableEffect(Unit) {
-        onDispose {
-            exoPlayer.release()
         }
     }
 }
