@@ -10,6 +10,7 @@ import androidx.lifecycle.viewModelScope
 import com.spotmap.spotmapandroid.Class.Comment
 import com.spotmap.spotmapandroid.Class.LoadableResource
 import com.spotmap.spotmapandroid.Class.LoadableResourceType
+import com.spotmap.spotmapandroid.Class.Publication
 import com.spotmap.spotmapandroid.Class.Spot
 import com.spotmap.spotmapandroid.Services.APIService
 import com.spotmap.spotmapandroid.Services.UserHandler
@@ -18,6 +19,7 @@ import kotlinx.coroutines.launch
 enum class SpotDetailsItem {
     SPOTDETAILS,
     COMMENT,
+    PUBLICATION,
     LOADING
 }
 
@@ -29,22 +31,34 @@ class SpotDetailsScreenViewModel(val apiService: APIService, val userHandler: Us
     private val _comments = MediatorLiveData<LoadableResource<List<Comment>>>()
     val comments: LiveData<LoadableResource<List<Comment>>> = _comments
 
+    private val _publications = MediatorLiveData<LoadableResource<List<Publication>>>()
+    val publications: LiveData<LoadableResource<List<Publication>>> = _publications
+
     private val _items = MediatorLiveData<List<SpotDetailsItem>>()
     val items: LiveData<List<SpotDetailsItem>> = _items
 
     init {
         _items.addSource(_spot) { spot ->
             val comments = _comments.value
-            if (comments != null) {
-                updateItems(spot, comments)
-
+            val publications = _publications.value
+            if (comments != null && publications != null) {
+                updateItems(spot, comments, publications)
             }
         }
 
         _items.addSource(_comments) { comments ->
             val spot = _spot.value
-            if (spot != null) {
-                updateItems(spot, comments)
+            val publications = _publications.value
+            if (spot != null && publications != null) {
+                updateItems(spot, comments, publications)
+            }
+        }
+
+        _items.addSource(_publications) { publications ->
+            val spot = _spot.value
+            val comments = _comments.value
+            if (spot != null && comments != null) {
+                updateItems(spot, comments, publications)
             }
         }
     }
@@ -63,6 +77,7 @@ class SpotDetailsScreenViewModel(val apiService: APIService, val userHandler: Us
                         comment = comment)
                     loadSpot()
                     loadComments()
+                    loadPublications()
                 }
             } catch (e: Exception) {
                 Log.d("Failed to add comment:", "$e")
@@ -75,15 +90,20 @@ class SpotDetailsScreenViewModel(val apiService: APIService, val userHandler: Us
         _spot.value = LoadableResource.loaded<Spot>(spot)
         viewModelScope.launch {
             loadComments()
+            loadPublications()
         }
     }
 
-    private fun updateItems(spot: LoadableResource<Spot>, comments: LoadableResource<List<Comment>>) {
-        val newItems = generateItems(spot, comments)
+    private fun updateItems(spot: LoadableResource<Spot>,
+                            comments: LoadableResource<List<Comment>>,
+                            publications: LoadableResource<List<Publication>>) {
+        val newItems = generateItems(spot, comments, publications)
         _items.value = newItems
     }
 
-    private fun generateItems(spot: LoadableResource<Spot>, comments: LoadableResource<List<Comment>>): List<SpotDetailsItem> {
+    private fun generateItems(spot: LoadableResource<Spot>,
+                              comments: LoadableResource<List<Comment>>,
+                              publications: LoadableResource<List<Publication>>): List<SpotDetailsItem> {
         var list = listOf<SpotDetailsItem>()
 
         if (spot.status == LoadableResourceType.LOADED) {
@@ -94,6 +114,12 @@ class SpotDetailsScreenViewModel(val apiService: APIService, val userHandler: Us
 
         if (comments.status == LoadableResourceType.LOADED) {
             list = list + listOf(SpotDetailsItem.COMMENT)
+        } else if (comments.status == LoadableResourceType.LOADING) {
+            list = list + listOf(SpotDetailsItem.LOADING)
+        }
+
+        if (publications.status == LoadableResourceType.LOADED) {
+            list = list + listOf(SpotDetailsItem.PUBLICATION)
         } else if (comments.status == LoadableResourceType.LOADING) {
             list = list + listOf(SpotDetailsItem.LOADING)
         }
@@ -123,6 +149,18 @@ class SpotDetailsScreenViewModel(val apiService: APIService, val userHandler: Us
                 } catch (e: Exception){
                     Log.d("Failed to load comments:", "$e")
                 }
+        }
+    }
+
+    private suspend fun loadPublications() {
+        _publications.value = LoadableResource.loading()
+        _spot.value?.resource?.let {
+            try {
+                val result = apiService.getPublications(spot = it)
+                _publications.value = LoadableResource.loaded<List<Publication>>(result)
+            } catch (e: Exception){
+                Log.d("Failed to load comments:", "$e")
+            }
         }
     }
 }

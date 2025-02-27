@@ -45,6 +45,7 @@ import com.spotmap.spotmapandroid.Commons.ImageFromUrl
 import com.spotmap.spotmapandroid.Commons.LargeTitleText
 import com.spotmap.spotmapandroid.Commons.SmallNormalText
 import com.spotmap.spotmapandroid.Commons.TitleText
+import com.spotmap.spotmapandroid.Commons.UserImageView
 import com.spotmap.spotmapandroid.Commons.Utils.convertToFastestUrl
 import com.spotmap.spotmapandroid.Commons.VerySmallNormalText
 import com.spotmap.spotmapandroid.R
@@ -114,44 +115,5 @@ fun UserCountView(modifier: Modifier, count: Int, title: String) {
         TitleText(text = count.toString())
         VerySmallNormalText(text = title,
             color = colorResource(id = R.color.LightDarker1Color))
-    }
-}
-
-@Composable
-fun UserImageView(modifier: Modifier, url: String?, height: Dp, displayButton: Boolean = false, onClick: () -> Unit) {
-    Box(
-        modifier = modifier
-            .size(height)
-            .clip(CircleShape)
-    ) {
-
-        ImageFromUrl(modifier = modifier
-            .fillMaxSize()
-            .clip(CircleShape),
-            contentScale = ContentScale.Crop,
-        url = url)
-
-        AsyncImage(
-            contentScale = ContentScale.Crop,
-            modifier = modifier
-                .fillMaxSize()
-                .clip(CircleShape),
-            model = url?.convertToFastestUrl(),
-            placeholder = painterResource(id = R.drawable.placeholder_user),
-            contentDescription = null
-        )
-        if (displayButton == true) {
-            Text(
-                text = "Edit",
-                textAlign = TextAlign.Center,
-                color = colorResource(id = R.color.LightColor),
-                modifier =  Modifier
-                    .fillMaxWidth()
-                    .clickable(onClick = onClick)
-                    .align(Alignment.BottomCenter)
-                    .background(colorResource(id = R.color.PrimaryColor))
-                    .padding(2.dp)
-            )
-        }
     }
 }

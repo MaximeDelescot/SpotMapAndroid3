@@ -38,8 +38,8 @@ import com.spotmap.spotmapandroid.Commons.NormalButton
 import com.spotmap.spotmapandroid.Commons.NormalText
 import com.spotmap.spotmapandroid.Commons.SmallNormalText
 import com.spotmap.spotmapandroid.Commons.TitleButton
+import com.spotmap.spotmapandroid.Commons.UserImageView
 import com.spotmap.spotmapandroid.Commons.Utils.convertToFastestUrl
-import com.spotmap.spotmapandroid.Screens.UserDetails.Views.UserImageView
 import com.spotmap.spotmapandroid.R
 import com.spotmap.spotmapandroid.Screens.SpotDetails.SpotDetailsScreenViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -114,7 +114,7 @@ fun CommentView(comment: Comment, modifier: Modifier = Modifier, nameClick: () -
     Row(verticalAlignment = Alignment.Top, modifier = modifier) {
         UserImageView(
             modifier = Modifier,
-            url = comment.creator.photoUrl?.convertToFastestUrl(),
+            url = comment.creator.photoUrl ?: "",
             height = 55.dp,
             onClick = {  })
         Spacer(Modifier.width(8.dp))

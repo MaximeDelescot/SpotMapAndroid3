@@ -206,7 +206,7 @@ fun InfiniteCarousel(
         ) { page ->
             Column(modifier = Modifier.fillMaxSize()) {
                 ImageFromUrl(
-                    url = imageUrls.value[page % imageUrls.value.size].convertToFastestUrl(),
+                    url = imageUrls.value[page % imageUrls.value.size],
                     modifier = Modifier.fillMaxWidth(),
                     contentScale = ContentScale.Crop
                 )

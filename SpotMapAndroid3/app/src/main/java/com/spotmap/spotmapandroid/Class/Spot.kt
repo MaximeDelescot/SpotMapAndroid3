@@ -116,3 +116,25 @@ class SpotFeed(
 
 
 }
+
+
+class SpotLight(val id: String,
+                val name: String) {
+
+    companion object {
+        fun create(feed: SpotLightFeed?): SpotLight? {
+                if(feed?.id != null && feed.name != null) {
+                    return SpotLight(
+                        id = feed.id,
+                        name = feed.name)
+                } else {
+                    return null
+                }
+        }
+    }
+
+}
+
+class SpotLightFeed(val id: String? = null,
+                    val name: String? = null) {
+}

@@ -12,6 +12,9 @@ import com.google.firebase.firestore.toObjects
 import com.spotmap.spotmapandroid.Class.Comment
 import com.spotmap.spotmapandroid.Class.CommentFeed
 import com.spotmap.spotmapandroid.Class.CommentRef
+import com.spotmap.spotmapandroid.Class.Publication
+import com.spotmap.spotmapandroid.Class.PublicationFeed
+import com.spotmap.spotmapandroid.Class.PublicationRef
 import com.spotmap.spotmapandroid.Class.Skater
 import com.spotmap.spotmapandroid.Class.SkaterFeed
 import com.spotmap.spotmapandroid.Class.Spot
@@ -29,6 +32,8 @@ class APICollectionName {
         val skaters: String = "skaters"
         val comments: String = "comments"
         val commentRefs: String = "commentRefs"
+        val publications: String = "publications"
+        val publicationRefs: String = "publicationRefs"
     }
 }
 
@@ -181,5 +186,27 @@ class APIService(val db: FirebaseFirestore = Firebase.firestore) {
         batch.update(spotRef, mapOf("commentCount" to FieldValue.increment(1)))
 
         batch.commit().await()
+    }
+
+    suspend fun getPublications(spot: Spot): List<Publication> = suspendCancellableCoroutine { continuation ->
+        val commentsRef = FirebaseFirestore.getInstance()
+            .collection(APICollectionName.spots)
+            .document(spot.id)
+            .collection(APICollectionName.publications)
+
+        var query = commentsRef
+            .orderBy("creationDate", Query.Direction.DESCENDING)
+
+        val snapshot = query.get().addOnSuccessListener { result ->
+            try {
+                val comments = result.toObjects<PublicationFeed>().mapNotNull { Publication.create(it) }
+                continuation.resume(comments)
+            } catch (e: Exception) {
+                continuation.resumeWithException(e)
+            }
+        }
+            .addOnFailureListener { exception ->
+                continuation.resumeWithException(exception)
+            }
     }
 }

@@ -1,5 +1,6 @@
 package com.spotmap.spotmapandroid.Screens.SpotDetails
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -10,6 +11,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -32,14 +34,20 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.input.pointer.motionEventSpy
 import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.res.vectorResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.google.firebase.storage.FirebaseStorage
 import com.spotmap.spotmapandroid.Class.Comment
 import com.spotmap.spotmapandroid.Class.LoadableResource
+import com.spotmap.spotmapandroid.Class.Publication
 import com.spotmap.spotmapandroid.Class.Skater
 import com.spotmap.spotmapandroid.Class.SkaterLight
 import com.spotmap.spotmapandroid.Class.Spot
+import com.spotmap.spotmapandroid.Class.SpotLight
 import com.spotmap.spotmapandroid.Commons.CustomPageIndicator
 import com.spotmap.spotmapandroid.Commons.GeneralButton
 import com.spotmap.spotmapandroid.Commons.GeneralButtonStyle
@@ -48,14 +56,18 @@ import com.spotmap.spotmapandroid.Commons.NormalButton
 import com.spotmap.spotmapandroid.Commons.NormalText
 import com.spotmap.spotmapandroid.Commons.SeparatorView
 import com.spotmap.spotmapandroid.Commons.SmallNormalText
+import com.spotmap.spotmapandroid.Commons.TitleButton
 import com.spotmap.spotmapandroid.Commons.TitleText
+import com.spotmap.spotmapandroid.Commons.UserImageView
 import com.spotmap.spotmapandroid.Commons.Utils.convertToFastestUrl
 import com.spotmap.spotmapandroid.Screens.Map.Views.InfiniteCarousel
 import com.spotmap.spotmapandroid.Screens.SpotDetails.Views.CommentsView
+import com.spotmap.spotmapandroid.Screens.SpotDetails.Views.PublicationView
 import com.spotmap.spotmapandroid.Screens.SpotDetails.Views.SpotDetailsView
+import com.spotmap.spotmapandroid.Screens.SpotDetails.Views.timeSinceDate
 import com.spotmap.spotmapandroid.Screens.UserDetails.UserDetailsScreenViewModel
-import com.spotmap.spotmapandroid.Screens.UserDetails.Views.UserImageView
 import java.nio.file.WatchEvent
+import java.sql.Date
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -67,7 +79,9 @@ fun SpotDetailsScreen(navController: NavController,
 
     val spot = viewModel.spot.observeAsState(null)
     val comments = viewModel.comments.observeAsState(LoadableResource.notLoaded())
+    val publications = viewModel.publications.observeAsState(LoadableResource.notLoaded())
     val items = viewModel.items.observeAsState(listOf())
+
 
     fun goToSkaterDetails(skater: SkaterLight) {
         userDetailsScreenViewModel.updateSkaterId(skater.id)
@@ -122,9 +136,24 @@ fun SpotDetailsScreen(navController: NavController,
                                     color = colorResource(id= R.color.PrimaryColor))
                             }
                         }
+                        SpotDetailsItem.PUBLICATION -> {
+                            publications.value.resource?.let {
+                                Column(Modifier.fillMaxSize()) {
+                                    for (publication in it) {
+                                        PublicationView(
+                                            modifier = Modifier.padding(start = 16.dp, end = 16.dp),
+                                            publication = publication,
+                                            nameClick = {})
+                                        SeparatorView()
+                                    }
+                                }
+
+                            }
+                        }
                     }
                 }
             }
         }
     )
 }
+
