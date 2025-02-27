@@ -3,6 +3,8 @@ package com.spotmap.spotmapandroid.Screens.SpotDetails.Views
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -11,13 +13,23 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.viewinterop.AndroidView
+import androidx.media3.common.MediaItem
+import androidx.media3.exoplayer.ExoPlayer
+import androidx.media3.ui.AspectRatioFrameLayout
+import androidx.media3.ui.PlayerView
 import com.spotmap.spotmapandroid.Class.Publication
 import com.spotmap.spotmapandroid.Class.SkaterLight
 import com.spotmap.spotmapandroid.Class.SpotLight
@@ -67,6 +79,14 @@ fun PublicationView(publication: Publication, nameClick: () -> Unit, modifier: M
                 SmallNormalText(publication.spot.name)
             }
         }
+
+        publication.videoUrl?.let {
+            Spacer(Modifier.height(8.dp))
+            VideoPlayer(
+                modifier= Modifier.fillMaxWidth().aspectRatio(3f / 4f),
+                videoUrl = it)
+        }
+
         publication.description?.let {
             Spacer(Modifier.height(8.dp))
             NormalText(it,
@@ -76,12 +96,32 @@ fun PublicationView(publication: Publication, nameClick: () -> Unit, modifier: M
     }
 }
 
-@Preview
+@androidx.media3.common.util.UnstableApi
 @Composable
-fun previewPublicationView() {
+fun VideoPlayer(modifier: Modifier = Modifier, videoUrl: String) {
+    val context = LocalContext.current
+    val exoPlayer = remember {
+        ExoPlayer.Builder(context).build().apply {
+            setMediaItem(MediaItem.fromUri(videoUrl))
+            prepare()
+            playWhenReady = true
+        }
+    }
 
-    val creator = SkaterLight(id="", userName = "Maxime", photoUrl = null)
-    val spot = SpotLight(id = "", name = "Mon spot")
-    val publication = Publication(id = "", description = "ma description", videoUrl = "", creator = creator, spot = spot)
-    PublicationView(publication = publication, nameClick = {}, modifier = Modifier)
+    AndroidView(
+        modifier = modifier
+            .clip(RectangleShape),
+        factory = {
+            PlayerView(it).apply {
+                useController = false
+                player = exoPlayer
+                resizeMode = AspectRatioFrameLayout.RESIZE_MODE_ZOOM
+            }
+        }
+    )
+    DisposableEffect(Unit) {
+        onDispose {
+            exoPlayer.release()
+        }
+    }
 }

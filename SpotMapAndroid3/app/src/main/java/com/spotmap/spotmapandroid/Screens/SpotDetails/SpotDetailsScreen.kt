@@ -147,7 +147,6 @@ fun SpotDetailsScreen(navController: NavController,
                                         SeparatorView()
                                     }
                                 }
-
                             }
                         }
                     }
