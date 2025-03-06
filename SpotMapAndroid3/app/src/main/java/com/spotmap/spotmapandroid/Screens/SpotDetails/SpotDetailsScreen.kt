@@ -28,14 +28,22 @@ import androidx.compose.runtime.livedata.observeAsState
 import com.spotmap.spotmapandroid.R
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.input.pointer.motionEventSpy
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -66,27 +74,45 @@ import com.spotmap.spotmapandroid.Screens.SpotDetails.Views.PublicationView
 import com.spotmap.spotmapandroid.Screens.SpotDetails.Views.SpotDetailsView
 import com.spotmap.spotmapandroid.Screens.SpotDetails.Views.timeSinceDate
 import com.spotmap.spotmapandroid.Screens.UserDetails.UserDetailsScreenViewModel
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.map
 import java.nio.file.WatchEvent
 import java.sql.Date
 
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SpotDetailsScreen(navController: NavController,
-                      modifier: Modifier = Modifier,
-                      viewModel: SpotDetailsScreenViewModel,
-                      userDetailsScreenViewModel: UserDetailsScreenViewModel) {
+fun SpotDetailsScreen(
+    navController: NavController,
+    modifier: Modifier = Modifier,
+    viewModel: SpotDetailsScreenViewModel,
+    userDetailsScreenViewModel: UserDetailsScreenViewModel
+) {
 
-    val spot = viewModel.spot.observeAsState(null)
-    val comments = viewModel.comments.observeAsState(LoadableResource.notLoaded())
-    val publications = viewModel.publications.observeAsState(LoadableResource.notLoaded())
     val items = viewModel.items.observeAsState(listOf())
+    val listState = rememberLazyListState()
 
+    val playingState = remember { mutableStateOf<Map<Int, Boolean>>(emptyMap()) }
 
-    fun goToSkaterDetails(skater: SkaterLight) {
-        userDetailsScreenViewModel.updateSkaterId(skater.id)
-        navController.navigate("userDetails")
+    fun getCenteredItemIndex(): Int? {
+        val firstVisible = listState.firstVisibleItemIndex
+        val offset = listState.firstVisibleItemScrollOffset
+        return if (offset > 0) firstVisible + 1 else firstVisible
     }
+
+    LaunchedEffect(listState) {
+        snapshotFlow { getCenteredItemIndex() }
+            .distinctUntilChanged()
+            .collect { centeredIndex ->
+                playingState.value = playingState.value.toMutableMap().apply {
+                    keys.forEach { put(it, false) }
+                    if (centeredIndex != null) put(centeredIndex, true)
+                }
+            }
+    }
+
+    val context = LocalContext.current
+
 
     Scaffold(
         topBar = {
@@ -106,48 +132,60 @@ fun SpotDetailsScreen(navController: NavController,
         },
         content = { innerPadding ->
             LazyColumn(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .background(colorResource(id = R.color.BackgroundColor))) {
-                items(items.value) { item ->
+                state = listState,
+                modifier = Modifier.fillMaxSize().background(colorResource(id = R.color.BackgroundColor))
+            ) {
+                itemsIndexed(items.value) { index, item ->
                     when (item) {
-                        SpotDetailsItem.SPOTDETAILS -> {
-                            spot.value?.resource?.let {
-                                SpotDetailsView(modifier = Modifier.padding(bottom = 8.dp), spot = it)
+                        is SpotDetailsItem.publication -> {
+
+//                            val isPlaying = remember { mutableStateOf(playingState.value[index] ?: false) }
+//
+//                            val exoPlayer = remember {
+//                                ExoPlayer.Builder(context).build().apply {
+//                                    setMediaItem(MediaItem.fromUri(item.publication.videoUrl.toString()))
+//                                    prepare()
+//                                }
+//                            }
+//
+//                            LaunchedEffect(playingState.value[index]) {
+//                                Log.d("SpotDetailsScreen", "Publication isPlaying[$index]: ${isPlaying.value}")
+//                                isPlaying.value = playingState.value[index] ?: false
+//                            }
+//
+                            Column(Modifier.fillMaxSize()) {
+
+                                PublicationView(
+                                    modifier = Modifier.padding(start = 16.dp, end = 16.dp),
+                                    publication = item.publication,
+                                    nameClick = {}
+                                )
                                 SeparatorView()
                             }
                         }
-                         SpotDetailsItem.COMMENT -> {
-                             comments.value.resource?.let {
-                                 CommentsView(
-                                     comments = it,
-                                     commentsCount = spot.value?.resource?.commentCount ?: 0,
-                                     viewModel = viewModel,
-                                     skaterNameClick = { skater ->
-                                         goToSkaterDetails(skater)
-                                     })
-                                 SeparatorView()
-                             }
-                         }
-                        SpotDetailsItem.LOADING -> {
-                            Row(modifier = modifier.fillMaxWidth().padding(16.dp),
-                                horizontalArrangement = Arrangement.Center) {
-                                CircularProgressIndicator(
-                                    color = colorResource(id= R.color.PrimaryColor))
+                        is SpotDetailsItem.SpotDetails -> {
+                            SpotDetailsView(modifier = Modifier.padding(bottom = 8.dp), spot = item.spot)
+                            SeparatorView()
+                        }
+                        is SpotDetailsItem.loading -> {
+                            Row(
+                                modifier = modifier.fillMaxWidth().padding(16.dp),
+                                horizontalArrangement = Arrangement.Center
+                            ) {
+                                CircularProgressIndicator(color = colorResource(id = R.color.PrimaryColor))
                             }
                         }
-                        SpotDetailsItem.PUBLICATION -> {
-                            publications.value.resource?.let {
-                                Column(Modifier.fillMaxSize()) {
-                                    for (publication in it) {
-                                        PublicationView(
-                                            modifier = Modifier.padding(start = 16.dp, end = 16.dp),
-                                            publication = publication,
-                                            nameClick = {})
-                                        SeparatorView()
-                                    }
+                        is SpotDetailsItem.Comments -> {
+                            CommentsView(
+                                comments = item.comments,
+                                commentsCount = item.spot.commentCount,
+                                viewModel = viewModel,
+                                skaterNameClick = { skater ->
+                                    userDetailsScreenViewModel.updateSkaterId(skater.id)
+                                    navController.navigate("userDetails")
                                 }
-                            }
+                            )
+                            SeparatorView()
                         }
                     }
                 }
@@ -155,4 +193,3 @@ fun SpotDetailsScreen(navController: NavController,
         }
     )
 }
-

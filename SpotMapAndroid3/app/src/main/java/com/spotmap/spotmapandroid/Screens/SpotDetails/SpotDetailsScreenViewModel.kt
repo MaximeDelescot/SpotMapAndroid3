@@ -16,11 +16,11 @@ import com.spotmap.spotmapandroid.Services.APIService
 import com.spotmap.spotmapandroid.Services.UserHandler
 import kotlinx.coroutines.launch
 
-enum class SpotDetailsItem {
-    SPOTDETAILS,
-    COMMENT,
-    PUBLICATION,
-    LOADING
+sealed class SpotDetailsItem {
+    data class SpotDetails(val spot: Spot): SpotDetailsItem()
+    data class Comments(val comments: List<Comment>, val spot: Spot): SpotDetailsItem()
+    data class publication(val publication: Publication): SpotDetailsItem()
+    object loading: SpotDetailsItem()
 }
 
 class SpotDetailsScreenViewModel(val apiService: APIService, val userHandler: UserHandler): ViewModel() {
@@ -107,21 +107,32 @@ class SpotDetailsScreenViewModel(val apiService: APIService, val userHandler: Us
         var list = listOf<SpotDetailsItem>()
 
         if (spot.status == LoadableResourceType.LOADED) {
-            list = list + listOf(SpotDetailsItem.SPOTDETAILS)
+            spot.resource?.let { list = list + listOf(SpotDetailsItem.SpotDetails(it)) }
         } else if (spot.status == LoadableResourceType.LOADING) {
-            list = list + listOf(SpotDetailsItem.LOADING)
+            list = list + listOf(SpotDetailsItem.loading)
         }
 
         if (comments.status == LoadableResourceType.LOADED) {
-            list = list + listOf(SpotDetailsItem.COMMENT)
+            val comments = comments.resource
+            val spot = spot.resource
+            if (comments != null && spot != null ) {
+                list = list + listOf(SpotDetailsItem.Comments(
+                    comments = comments,
+                    spot = spot))
+            }
         } else if (comments.status == LoadableResourceType.LOADING) {
-            list = list + listOf(SpotDetailsItem.LOADING)
+            list = list + listOf(SpotDetailsItem.loading)
         }
 
         if (publications.status == LoadableResourceType.LOADED) {
-            list = list + listOf(SpotDetailsItem.PUBLICATION)
+            publications.resource?.let { it.map { list = list + listOf(SpotDetailsItem.publication(it)) }  }
+            publications.resource?.let { it.map { list = list + listOf(SpotDetailsItem.publication(it)) }  }
+            publications.resource?.let { it.map { list = list + listOf(SpotDetailsItem.publication(it)) }  }
+            publications.resource?.let { it.map { list = list + listOf(SpotDetailsItem.publication(it)) }  }
+
+            publications.resource?.let { it.map { list = list + listOf(SpotDetailsItem.publication(it)) }  }
         } else if (comments.status == LoadableResourceType.LOADING) {
-            list = list + listOf(SpotDetailsItem.LOADING)
+            list = list + listOf(SpotDetailsItem.loading)
         }
 
         return list

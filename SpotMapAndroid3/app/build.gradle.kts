@@ -77,7 +77,9 @@ dependencies {
     implementation(libs.firebase.storage)
     implementation(platform(libs.firebase.bom))
 
-    implementation(libs.androidx.media3.exoplayer)
     implementation(libs.androidx.media3.ui)
+
+    implementation(libs.androidx.media3.exoplayer.v120)
+    implementation(libs.androidx.media3.ui.v120)
 
 }
