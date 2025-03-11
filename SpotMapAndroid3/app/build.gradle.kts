@@ -80,6 +80,6 @@ dependencies {
     implementation(libs.androidx.media3.ui)
 
     implementation(libs.androidx.media3.exoplayer.v120)
-    implementation(libs.androidx.media3.ui.v120)
+    implementation("androidx.media3:media3-ui:1.2.0")
 
 }

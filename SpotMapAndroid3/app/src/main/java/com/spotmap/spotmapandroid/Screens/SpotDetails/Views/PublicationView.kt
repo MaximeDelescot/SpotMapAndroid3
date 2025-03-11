@@ -8,6 +8,7 @@ import android.view.TextureView
 import android.widget.MediaController
 import android.widget.VideoView
 import androidx.annotation.OptIn
+import androidx.compose.foundation.AndroidExternalSurface
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.runtime.*
@@ -21,6 +22,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
+import androidx.core.net.toUri
 import com.spotmap.spotmapandroid.Class.Publication
 import com.spotmap.spotmapandroid.Commons.NormalText
 import com.spotmap.spotmapandroid.Commons.SmallNormalText
@@ -32,6 +34,7 @@ import androidx.media3.common.util.UnstableApi
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.ui.PlayerView
 import androidx.media3.ui.AspectRatioFrameLayout
+import com.spotmap.spotmapandroid.Screens.SpotDetails.VideoPlayerScreen
 
 @Composable
 fun PublicationView(
@@ -65,52 +68,70 @@ fun PublicationView(
         // Affichage de la vidéo avec ExoPlayer
         publication.videoUrl?.let {
             Spacer(Modifier.height(8.dp))
-            ExoPlayerVideoScreen(
-                Uri.parse(it),
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height((LocalConfiguration.current.screenWidthDp * (4f / 3f)).dp) // Hauteur dynamique selon le ratio
-            )
+            VideoPlayerScreen(url = it)
+//            ExoPlayerVideoScreen(
+//                "https://cdn.pixabay.com/video/2015/08/20/468-136808389_large.mp4".toUri(),
+//                modifier = Modifier
+//                    .fillMaxWidth()
+//                    .height((LocalConfiguration.current.screenWidthDp * (4f / 3f)).dp) // Hauteur dynamique selon le ratio
+//            )
+        }
+
+        Spacer(Modifier.height(8.dp))
+        Row(modifier = Modifier,
+            horizontalArrangement = Arrangement.End) {
+            IconWithValueView(
+                iconId=R.drawable.ic_like,
+                value = 12)
+
+            Spacer(modifier = Modifier.width(8.dp))
+            IconWithValueView(
+                iconId=R.drawable.ic_comment,
+                value = 12)
         }
 
         publication.description?.let {
-            Spacer(Modifier.height(8.dp))
-            NormalText(it, color = colorResource(id = R.color.LightColor))
+            if (publication.description.isNotEmpty()) {
+                Spacer(Modifier.height(8.dp))
+                NormalText(it, color = colorResource(id = R.color.LightColor))
+            }
         }
     }
 }
 
-@OptIn(UnstableApi::class)
-@Composable
-fun ExoPlayerVideoScreen(videoUri: Uri, modifier: Modifier = Modifier) {
-    val context = LocalContext.current
+//@OptIn(UnstableApi::class)
+//@Composable
+//fun ExoPlayerVideoScreen(videoUri: Uri, modifier: Modifier = Modifier) {
+//    val context = LocalContext.current
+//
+//    val exoPlayer = remember {
+//        ExoPlayer.Builder(context).build().apply {
+//            val mediaItem = MediaItem.Builder()
+//                .setUri(videoUri)
+//                .build()
+//            setMediaItem(mediaItem)
+//            prepare()
+//            playWhenReady = true
+//        }
+//    }
+//
+//    DisposableEffect(exoPlayer) {
+//        onDispose { exoPlayer.release() }
+//    }
+//
+//    Box(
+//        modifier = modifier.fillMaxSize().background(Color.Black)
+//    ) {
+//        AndroidView(
+//            factory = { ctx ->
+//                SurfaceView(context).also {
+//                    exoPlayer.setVideoSurfaceView(it)
+//                    exoPlayer.setVideoScalingMode(VIDEO_SCALING_MODE_SCALE_TO_FIT_WITH_CROPPING)
+//                }
+//            },
+//            modifier = Modifier.fillMaxSize()
+//        )
+//    }
+//}
 
-    val exoPlayer = remember {
-        ExoPlayer.Builder(context).build().apply {
-            val mediaItem = MediaItem.Builder()
-                .setUri(videoUri)
-                .build()
-            setMediaItem(mediaItem)
-            prepare()
-            playWhenReady = true
-        }
-    }
-
-    DisposableEffect(Unit) {
-        onDispose { exoPlayer.release() }
-    }
-
-    Box(
-        modifier = modifier.fillMaxSize().background(Color.Black)
-    ) {
-        AndroidView(
-            factory = { ctx ->
-                SurfaceView(context).also {
-                    exoPlayer.setVideoSurfaceView(it)
-                    exoPlayer.setVideoScalingMode(VIDEO_SCALING_MODE_SCALE_TO_FIT_WITH_CROPPING)
-                }
-            },
-            modifier = Modifier.fillMaxSize()
-        )
-    }
-}
+private const val VIDEO_URL = "https://cdn.pixabay.com/video/2015/08/20/468-136808389_large.mp4"

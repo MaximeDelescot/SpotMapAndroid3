@@ -126,11 +126,6 @@ class SpotDetailsScreenViewModel(val apiService: APIService, val userHandler: Us
 
         if (publications.status == LoadableResourceType.LOADED) {
             publications.resource?.let { it.map { list = list + listOf(SpotDetailsItem.publication(it)) }  }
-            publications.resource?.let { it.map { list = list + listOf(SpotDetailsItem.publication(it)) }  }
-            publications.resource?.let { it.map { list = list + listOf(SpotDetailsItem.publication(it)) }  }
-            publications.resource?.let { it.map { list = list + listOf(SpotDetailsItem.publication(it)) }  }
-
-            publications.resource?.let { it.map { list = list + listOf(SpotDetailsItem.publication(it)) }  }
         } else if (comments.status == LoadableResourceType.LOADING) {
             list = list + listOf(SpotDetailsItem.loading)
         }

@@ -1,6 +1,7 @@
 package com.spotmap.spotmapandroid.Screens.SpotDetails
 
 import android.util.Log
+import androidx.compose.foundation.AndroidExternalSurface
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -30,57 +31,37 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.material3.Button
+import androidx.compose.material3.Card
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.snapshotFlow
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.scale
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.RectangleShape
-import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.input.pointer.motionEventSpy
+import androidx.compose.ui.draw.clipToBounds
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
-import androidx.compose.ui.res.vectorResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.google.firebase.storage.FirebaseStorage
-import com.spotmap.spotmapandroid.Class.Comment
-import com.spotmap.spotmapandroid.Class.LoadableResource
-import com.spotmap.spotmapandroid.Class.Publication
-import com.spotmap.spotmapandroid.Class.Skater
-import com.spotmap.spotmapandroid.Class.SkaterLight
-import com.spotmap.spotmapandroid.Class.Spot
-import com.spotmap.spotmapandroid.Class.SpotLight
-import com.spotmap.spotmapandroid.Commons.CustomPageIndicator
-import com.spotmap.spotmapandroid.Commons.GeneralButton
-import com.spotmap.spotmapandroid.Commons.GeneralButtonStyle
-import com.spotmap.spotmapandroid.Commons.LargeTitleText
-import com.spotmap.spotmapandroid.Commons.NormalButton
-import com.spotmap.spotmapandroid.Commons.NormalText
+import androidx.compose.ui.viewinterop.AndroidView
+import androidx.media3.common.C
+import androidx.media3.common.MediaItem
+import androidx.media3.common.util.UnstableApi
+import androidx.media3.exoplayer.ExoPlayer
+import androidx.media3.ui.AspectRatioFrameLayout
+import androidx.media3.ui.PlayerView
 import com.spotmap.spotmapandroid.Commons.SeparatorView
-import com.spotmap.spotmapandroid.Commons.SmallNormalText
-import com.spotmap.spotmapandroid.Commons.TitleButton
-import com.spotmap.spotmapandroid.Commons.TitleText
-import com.spotmap.spotmapandroid.Commons.UserImageView
-import com.spotmap.spotmapandroid.Commons.Utils.convertToFastestUrl
-import com.spotmap.spotmapandroid.Screens.Map.Views.InfiniteCarousel
 import com.spotmap.spotmapandroid.Screens.SpotDetails.Views.CommentsView
 import com.spotmap.spotmapandroid.Screens.SpotDetails.Views.PublicationView
 import com.spotmap.spotmapandroid.Screens.SpotDetails.Views.SpotDetailsView
-import com.spotmap.spotmapandroid.Screens.SpotDetails.Views.timeSinceDate
+
 import com.spotmap.spotmapandroid.Screens.UserDetails.UserDetailsScreenViewModel
 import kotlinx.coroutines.flow.distinctUntilChanged
-import kotlinx.coroutines.flow.map
-import java.nio.file.WatchEvent
-import java.sql.Date
 
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SpotDetailsScreen(
     navController: NavController,
@@ -88,7 +69,6 @@ fun SpotDetailsScreen(
     viewModel: SpotDetailsScreenViewModel,
     userDetailsScreenViewModel: UserDetailsScreenViewModel
 ) {
-
     val items = viewModel.items.observeAsState(listOf())
     val listState = rememberLazyListState()
 
@@ -113,7 +93,7 @@ fun SpotDetailsScreen(
 
     val context = LocalContext.current
 
-
+    @OptIn(ExperimentalMaterial3Api::class)
     Scaffold(
         topBar = {
             TopAppBar(
@@ -139,20 +119,6 @@ fun SpotDetailsScreen(
                     when (item) {
                         is SpotDetailsItem.publication -> {
 
-//                            val isPlaying = remember { mutableStateOf(playingState.value[index] ?: false) }
-//
-//                            val exoPlayer = remember {
-//                                ExoPlayer.Builder(context).build().apply {
-//                                    setMediaItem(MediaItem.fromUri(item.publication.videoUrl.toString()))
-//                                    prepare()
-//                                }
-//                            }
-//
-//                            LaunchedEffect(playingState.value[index]) {
-//                                Log.d("SpotDetailsScreen", "Publication isPlaying[$index]: ${isPlaying.value}")
-//                                isPlaying.value = playingState.value[index] ?: false
-//                            }
-//
                             Column(Modifier.fillMaxSize()) {
 
                                 PublicationView(
@@ -189,6 +155,42 @@ fun SpotDetailsScreen(
                         }
                     }
                 }
+            }
+        }
+    )
+}
+
+@androidx.annotation.OptIn(UnstableApi::class)
+@Composable
+fun VideoPlayerScreen(url: String) {
+    val context = LocalContext.current
+    val player = remember {
+        ExoPlayer.Builder(context).build().apply {
+            repeatMode = ExoPlayer.REPEAT_MODE_ALL
+            videoScalingMode = C.VIDEO_SCALING_MODE_SCALE_TO_FIT_WITH_CROPPING
+            playWhenReady = true
+        }
+    }
+
+    LaunchedEffect(url) {
+        player.setMediaItem(MediaItem.fromUri(url))
+        player.prepare()
+    }
+
+    DisposableEffect(url) {
+        onDispose {
+            player.pause()
+            player.release()
+        }
+    }
+
+    AndroidView(
+        modifier = Modifier.fillMaxWidth()
+            .height((LocalConfiguration.current.screenWidthDp * (4f / 3f)).dp).clipToBounds(),
+        factory = { context ->
+            PlayerView(context).apply {
+                this.player = player
+                resizeMode = AspectRatioFrameLayout.RESIZE_MODE_ZOOM
             }
         }
     )
