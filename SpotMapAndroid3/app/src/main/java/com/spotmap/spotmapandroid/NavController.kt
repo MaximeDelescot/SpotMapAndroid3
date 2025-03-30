@@ -19,6 +19,8 @@ import com.spotmap.spotmapandroid.Screens.Social.SocialScreen
 import com.spotmap.spotmapandroid.Screens.SpotDetails.SpotDetailsItem
 import com.spotmap.spotmapandroid.Screens.SpotDetails.SpotDetailsScreen
 import com.spotmap.spotmapandroid.Screens.SpotDetails.SpotDetailsScreenViewModel
+import com.spotmap.spotmapandroid.Screens.UploadATrick.UploadATrickScreen
+import com.spotmap.spotmapandroid.Screens.UploadATrick.UploadATrickScreenViewModel
 import com.spotmap.spotmapandroid.Screens.UserDetails.UserDetailsScreen
 import com.spotmap.spotmapandroid.Screens.UserDetails.UserDetailsScreenViewModel
 import com.spotmap.spotmapandroid.Services.APIService
@@ -36,6 +38,7 @@ fun MainApp() {
     val addSpotViewModel = AddSpotScreenViewModel(userHandler, apiService, storageService)
     val mapViewModel = MapScreenViewModel(apiService)
     val spotDetailsModel = SpotDetailsScreenViewModel(apiService, userHandler)
+    val uploadATrickScreenViewModel = UploadATrickScreenViewModel(apiService, userHandler)
 
     val userDetailsModel = UserDetailsScreenViewModel(
         userHandler,
@@ -78,12 +81,18 @@ fun MainApp() {
                 SpotDetailsScreen(
                     navController = navController,
                     viewModel = spotDetailsModel,
-                    userDetailsScreenViewModel = userDetailsModel)
+                    userDetailsScreenViewModel = userDetailsModel,
+                    uploadTrickViewModel = uploadATrickScreenViewModel)
             }
             composable("userDetails") {
                 UserDetailsScreen(
                     navController = navController,
                     viewModel = userDetailsModel)
+            }
+            composable("uploadATrick") {
+                UploadATrickScreen(
+                    viewModel = uploadATrickScreenViewModel,
+                    navController = navController)
             }
         }
     }

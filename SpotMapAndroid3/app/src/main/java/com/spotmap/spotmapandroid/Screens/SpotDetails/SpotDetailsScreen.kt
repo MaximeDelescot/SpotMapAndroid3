@@ -1,6 +1,10 @@
 package com.spotmap.spotmapandroid.Screens.SpotDetails
 
+import android.net.Uri
 import android.util.Log
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.PickVisualMediaRequest
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.AndroidExternalSurface
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -38,6 +42,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.snapshotFlow
@@ -54,9 +59,11 @@ import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.ui.AspectRatioFrameLayout
 import androidx.media3.ui.PlayerView
 import com.spotmap.spotmapandroid.Commons.SeparatorView
+import com.spotmap.spotmapandroid.Screens.Map.Views.ZoomTarget
 import com.spotmap.spotmapandroid.Screens.SpotDetails.Views.CommentsView
 import com.spotmap.spotmapandroid.Screens.SpotDetails.Views.PublicationView
 import com.spotmap.spotmapandroid.Screens.SpotDetails.Views.SpotDetailsView
+import com.spotmap.spotmapandroid.Screens.UploadATrick.UploadATrickScreenViewModel
 
 import com.spotmap.spotmapandroid.Screens.UserDetails.UserDetailsScreenViewModel
 import kotlinx.coroutines.flow.distinctUntilChanged
@@ -67,12 +74,26 @@ fun SpotDetailsScreen(
     navController: NavController,
     modifier: Modifier = Modifier,
     viewModel: SpotDetailsScreenViewModel,
-    userDetailsScreenViewModel: UserDetailsScreenViewModel
+    userDetailsScreenViewModel: UserDetailsScreenViewModel,
+    uploadTrickViewModel: UploadATrickScreenViewModel,
 ) {
     val items = viewModel.items.observeAsState(listOf())
     val listState = rememberLazyListState()
 
     val playingState = remember { mutableStateOf<Map<Int, Boolean>>(emptyMap()) }
+
+    val uploadTrickVideo = remember { mutableStateOf<Uri?>(null) }
+
+    LaunchedEffect(uploadTrickVideo.value) {
+        uploadTrickVideo.value?.let {
+            uploadTrickViewModel.setVideoUri(it)
+            navController.navigate("uploadATrick")
+        }
+    }
+
+    val launcher = rememberLauncherForActivityResult(ActivityResultContracts.PickMultipleVisualMedia()) {
+        uploadTrickVideo.value = it.first()
+    }
 
     fun getCenteredItemIndex(): Int? {
         val firstVisible = listState.firstVisibleItemIndex
@@ -130,7 +151,13 @@ fun SpotDetailsScreen(
                             }
                         }
                         is SpotDetailsItem.SpotDetails -> {
-                            SpotDetailsView(modifier = Modifier.padding(bottom = 8.dp), spot = item.spot)
+                            SpotDetailsView(
+                                modifier = Modifier.padding(bottom = 8.dp),
+                                spot = item.spot,
+                                followThisSpot = {},
+                                uploadTrickTapped = {
+                                    launcher.launch(PickVisualMediaRequest(mediaType = ActivityResultContracts.PickVisualMedia.VideoOnly))
+                                })
                             SeparatorView()
                         }
                         is SpotDetailsItem.loading -> {

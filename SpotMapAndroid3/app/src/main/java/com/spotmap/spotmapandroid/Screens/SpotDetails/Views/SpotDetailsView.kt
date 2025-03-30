@@ -34,7 +34,7 @@ import java.security.acl.Group
 
 
 @Composable
-fun SpotDetailsView(modifier: Modifier = Modifier, spot: Spot) {
+fun SpotDetailsView(modifier: Modifier = Modifier, spot: Spot, uploadTrickTapped: ()->Unit, followThisSpot: ()->Unit) {
 
     val currentIndex = remember { mutableStateOf(0) }
 
@@ -112,13 +112,13 @@ fun SpotDetailsView(modifier: Modifier = Modifier, spot: Spot) {
                     modifier = Modifier.weight(1f),
                     title = "Follow this spot",
                     style = GeneralButtonStyle.PRIMARY,
-                    onClick = {})
+                    onClick = followThisSpot)
                 Spacer(modifier = Modifier.width(16.dp))
                 GeneralButton(
                     modifier = Modifier.weight(1f),
                     title = "Upload a trick",
                     style = GeneralButtonStyle.SECONDARY,
-                    onClick = {})
+                    onClick = uploadTrickTapped)
             }
         }
     }
