@@ -23,6 +23,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.spotmap.spotmapandroid.R
 import androidx.compose.foundation.layout.Box
+import androidx.compose.ui.graphics.Color
 
 
 @Composable
@@ -69,13 +70,14 @@ fun CustomTextField(
 
 @Composable
 fun LargeCustomTextField(
+    color: Color = colorResource(id = R.color.BackgroundColor),
     placeholder: String,
     textState: MutableState<String> = remember { mutableStateOf("") },
     onTextDidChange: () -> Unit,
     isPassword: Boolean = false
 ) {
     val modifier = Modifier.fillMaxWidth().height(160.dp).padding(0.dp, 0.dp)
-        .background(color = colorResource(id = R.color.BackgroundColor), shape = RoundedCornerShape(8.dp))
+        .background(color = color, shape = RoundedCornerShape(8.dp))
 
     val textColor = colorResource(id = R.color.LightColor)
     val placeholderColor = colorResource(id = R.color.LightDarker2Color)
